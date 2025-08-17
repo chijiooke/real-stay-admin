@@ -23,12 +23,9 @@ export type ApiResponse<T = any> = {
 };
 
 export type ApiPaginatedResponseData<T = void> = {
-  status: number;
-  take: number;
-  limit: number;
-  cursor: number;
-  records: Array<T>;
-  pageCount: number;
+  success: boolean;
+  data: T;
+  message: string;
 };
 
 export type ApiErrorResponse = {

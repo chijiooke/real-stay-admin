@@ -1,7 +1,7 @@
 import { BASE_URL } from "@/app/configs/constant";
 import { realstayApi } from "@/app/store/storeConfigQuery";
 import { ApiRequest, ApiResponse } from "../api";
-import { UserResponse } from "./user-types";
+import { UserResponse, UsersResponse } from "./user-types";
 
 export const userApi = realstayApi.injectEndpoints({
   overrideExisting: true,
@@ -11,6 +11,15 @@ export const userApi = realstayApi.injectEndpoints({
         return {
           url: BASE_URL + `/users/${path?.id}`,
           method: "GET",
+        };
+      },
+    }),
+    getUsers: builder.query<ApiResponse<UsersResponse>, ApiRequest>({
+      query: ({ params }) => {
+        return {
+          url: BASE_URL + `/users`,
+          method: "GET",
+          params,
         };
       },
     }),

@@ -210,7 +210,6 @@ export const PaginationComponent: FC<{
         onPageChange={(e, value) => handlePageChange(e, value)}
         rowsPerPage={rowsPerPage}
         onRowsPerPageChange={(e) => handleRowChange(e)}
-        ActionsComponent={(props) => <CustomPaginationActions {...props} />}
       />
       {!lgDown && (
         <Pagination

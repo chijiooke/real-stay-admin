@@ -54,7 +54,7 @@ export const UserTable = () => {
             <EmptyTableRows
             
               noOfColumns={tableHeaders.length}
-              text="No user to display..."
+              text="No data to display..."
             />
           )}
         </TableBody>

@@ -184,6 +184,7 @@ export const theme = createTheme({
             fontSize: ".75rem",
             color: theme.palette.primary.main, // input text color
             padding: "12px 14px",
+            borderRadius:"10px",
             "&::placeholder": {
               color: theme.palette.primary.main, // placeholder color
               opacity: 1,
@@ -267,24 +268,37 @@ export const theme = createTheme({
         }),
       },
     },
-
     MuiTabs: {
       styleOverrides: {
-        root: {
+        indicator: { display: "none" },
+        root: ({ theme }) => ({
           minHeight: "unset",
-        },
+          color: theme.palette.common.white, // makes tab indicator and text white
+          backgroundColor: theme.palette.primary.dark,
+          pt: 3,
+          width: "fit-content",
+        }),
       },
     },
     MuiTab: {
       styleOverrides: {
-        root: {
+        root: ({ theme }) => ({
           textTransform: "none",
           fontWeight: 500,
           minHeight: "unset",
+          // margin: "0.5rem",
           padding: "6px 12px",
-        },
+          borderRadius: "10px",
+          color: theme.palette.common.white, // normal state text color
+          "&.Mui-selected": {
+            backgroundColor: "#FFFFFF1A",
+            border: "none",
+          },
+          transition:"0.8s ease all"
+        }),
       },
     },
+
     MuiTableHead: {
       styleOverrides: {
         root: ({ theme }) => ({
