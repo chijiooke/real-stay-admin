@@ -55,7 +55,7 @@ export const UserTable: FC<{ users: User[]; isFetching: boolean }> = ({
               return (
                 <TableRow key={indx} sx={{ whiteSpace: "nowrap" }}>
                   <TableCell>
-                    {u?._id !== "" ? u?._id : "-"}{" "}
+                    {u?.phone_number}
                     <CopyText text={u?._id || ""} fontSize={12} />
                   </TableCell>
                   <TableCell>
