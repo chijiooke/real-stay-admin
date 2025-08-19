@@ -1,4 +1,4 @@
-# 🏢 Real Stay – Admin Frontend
+# 🏢 Real Stay – Admin 
 
 This is the **Admin Dashboard** for the Real Estate Platform, built with **Next.js**.  
 It provides administrators and agents with tools to manage properties, users, and bookings, ensuring smooth operation of the platform.
