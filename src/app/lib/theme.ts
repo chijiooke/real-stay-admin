@@ -1,4 +1,4 @@
-import { createTheme, PaletteColorOptions } from "@mui/material";
+import { colors, createTheme, PaletteColorOptions } from "@mui/material";
 import type {} from "@mui/lab/themeAugmentation";
 
 // MUI module augmentation for custom breakpoints and palette
@@ -49,20 +49,19 @@ export const theme = createTheme({
 
   palette: {
     primary: {
-      main: "#FFFFFFB2",
-      light: "#ffffff",
-      dark: "#181818",
-      darker: "#0F0F0F",
-      contrastText: "#000000",
+      main: "#181818", // strong dark gray (main brand color)
+      light: "#262626", // softer dark for hover/surfaces
+      dark: "#151515", // deepest tone
+      contrastText: "#FFFFFF", // ensure readability on darks
     },
     secondary: {
-      main: "#262626",
-      light: "#262626",
-      dark: "#0F0F0F",
-      lighter: "#FFF4E5",
-      darker: "#663C00",
-      contrastText: "#ffffff",
+      main: "#FFF4E5", // warm light background
+      light: "#FFFFFF", // pure white for surfaces
+      lighter: "#FFFFFF99", // extra light for highlights
+      dark: "#4A4A4A", // neutral charcoal for hover/active
+      contrastText: "#000000", // strong contrast on light tones
     },
+
     error: {
       main: "#DC2626",
       light: "#F87171",
@@ -175,31 +174,36 @@ export const theme = createTheme({
     MuiTextField: {
       defaultProps: {
         // InputLabelProps: { shrink: true,  },
+
         inputProps: { min: 0 },
       },
       styleOverrides: {
         root: ({ theme }) => ({
-          marginTop: "1.2rem",
+          // marginTop: "1.2rem",
+
           "& .MuiInputBase-input": {
             fontSize: ".75rem",
-            color: theme.palette.primary.main, // input text color
-            padding: "12px 14px",
-            borderRadius:"10px",
+            color: theme.palette.secondary.main, // input text color
+            // padding: "12px 14px",
+            borderRadius: "10px",
             "&::placeholder": {
-              color: theme.palette.primary.main, // placeholder color
+              color: theme.palette.secondary.main, // placeholder color
               opacity: 1,
             },
           },
           "& .MuiOutlinedInput-root": {
+            // marginTop: "1rem",
             borderRadius: "8px",
             "&.Mui-focused .MuiInputBase-input": {
-              color: theme.palette.primary.main,
+              color: theme.palette.secondary.main,
             },
+
             "&.Mui-disabled .MuiInputBase-input": {
-              color: theme.palette.primary.main,
+              color: theme.palette.secondary.main,
               opacity: 0.5,
             },
             "& fieldset": {
+              height: "45px",
               borderColor: theme.palette.secondary.main,
               legend: {
                 display: "none",
@@ -213,10 +217,10 @@ export const theme = createTheme({
             },
           },
           "& .MuiInputLabel-root": {
-            transform: "translate(0px, -24px) scale(0.9)", // optional: reposition label
-            color: theme.palette.primary.main,
+            transform: "translate(0px, -28px) scale(0.9)", // optional: reposition label
+            color: theme.palette.secondary.main,
             "&.Mui-focused": {
-              color: theme.palette.primary.main,
+              color: theme.palette.secondary.main,
             },
           },
         }),
@@ -242,10 +246,6 @@ export const theme = createTheme({
     MuiLoadingButton: {
       styleOverrides: {
         root: ({ theme }) => ({
-          "&:hover": {
-            backgroundColor: theme.palette.primary.light,
-          },
-
           // Optional: Loader color styling
           "& .MuiCircularProgress-root": {
             color: theme.palette.common.white,
@@ -255,15 +255,57 @@ export const theme = createTheme({
     },
     MuiButton: {
       styleOverrides: {
-        root: ({ theme }) => ({
+        root: () => ({
           textTransform: "none",
           borderRadius: "8px",
           fontWeight: 500,
-          padding: "8px 16px",
+          // padding: "8px 16px",
           fontSize: ".875rem",
           transition: "background-color 0.3s ease",
+
+          // "&:hover": {
+          //   backgroundColor: theme.palette.primary.light,
+          // },
+        }),
+        containedPrimary: ({ theme }) => ({
           "&:hover": {
-            backgroundColor: theme.palette.primary.light,
+            backgroundColor: theme.palette.common.white,
+            color: theme.palette.primary.main,
+            border: `1px solid ${theme.palette.primary.main}`,
+          },
+        }),
+        containedSecondary: ({ theme }) => ({
+          "&:hover": {
+            backgroundColor: theme.palette.primary.dark,
+            color: theme.palette.secondary.main,
+          },
+        }),
+        containedError: ({ theme }) => ({
+          "&:hover": {
+            backgroundColor: theme.palette.common.white,
+            color: theme.palette.error.main,
+            border: `1px solid ${theme.palette.error.main}`,
+          },
+        }),
+        containedSuccess: ({ theme }) => ({
+          "&:hover": {
+            backgroundColor: theme.palette.common.white,
+            color: theme.palette.success.main,
+            border: `1px solid ${theme.palette.success.main}`,
+          },
+        }),
+        containedInfo: ({ theme }) => ({
+          "&:hover": {
+            backgroundColor: theme.palette.common.white,
+            color: theme.palette.info.main,
+            border: `1px solid ${theme.palette.info.main}`,
+          },
+        }),
+        containedWarning: ({ theme }) => ({
+          "&:hover": {
+            backgroundColor: theme.palette.common.white,
+            color: theme.palette.warning.main,
+            border: `1px solid ${theme.palette.warning.main}`,
           },
         }),
       },
@@ -277,6 +319,7 @@ export const theme = createTheme({
           backgroundColor: theme.palette.primary.dark,
           pt: 3,
           width: "fit-content",
+          borderRadius: "10px",
         }),
       },
     },
@@ -293,16 +336,23 @@ export const theme = createTheme({
           "&.Mui-selected": {
             backgroundColor: "#FFFFFF1A",
             border: "none",
+            color: theme.palette.common.white,
           },
-          transition:"0.8s ease all"
+          transition: "0.8s ease all",
         }),
       },
     },
-
+    MuiDivider: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+          borderColor: theme.palette.primary.light,
+        }),
+      },
+    },
     MuiTableHead: {
       styleOverrides: {
         root: ({ theme }) => ({
-          color: theme.palette.primary.lighter,
+          color: theme.palette.secondary.light,
         }),
       },
     },
@@ -310,8 +360,8 @@ export const theme = createTheme({
       styleOverrides: {
         root: ({ theme }) => ({
           fontSize: ".75rem",
-          color: theme.palette.primary.light,
-          borderBottom: `1px solid ${theme.palette.secondary.main}`,
+          color: theme.palette.secondary.light,
+          borderBottom: `1px solid ${theme.palette.primary.light}`,
         }),
       },
     },
@@ -320,7 +370,7 @@ export const theme = createTheme({
         root: ({ theme }) => ({
           transition: "background-color 0.3s",
           "&:hover td": {
-            backgroundColor: theme.palette.primary.dark,
+            backgroundColor: theme.palette.primary.light,
             cursor: "pointer",
           },
         }),
@@ -377,21 +427,21 @@ export const theme = createTheme({
     MuiPagination: {
       styleOverrides: {
         root: ({ theme }) => ({
-          color: theme.palette.primary.light,
+          color: theme.palette.secondary.light,
         }),
       },
     },
     MuiPaginationItem: {
       styleOverrides: {
         root: ({ theme }) => ({
-          color: theme.palette.primary.light,
+          color: theme.palette.secondary.light,
         }),
       },
     },
     MuiTablePagination: {
       styleOverrides: {
         root: ({ theme }) => ({
-          color: theme.palette.primary.light,
+          color: theme.palette.secondary.light,
         }),
       },
     },
@@ -403,20 +453,25 @@ export const theme = createTheme({
       styleOverrides: {
         root: ({ theme }) => ({
           borderRadius: "8px",
-          backgroundColor: theme.palette.primary.dark,
+          backgroundColor: theme.palette.primary.main,
+          // borderColor: theme?.palette?.primary?.light,
+          border: `1px solid ${theme?.palette?.primary?.light}`,
         }),
       },
     },
 
     MuiMenu: {
       styleOverrides: {
-        paper: {
-          borderRadius: "12px",
+        paper: ({ theme }) => ({
+          borderRadius: "8px",
           boxShadow: "0 4px 6px rgba(0,0,0,0.05)",
           padding: "4px 0",
-        },
+          backgroundColor: theme.palette.secondary.main,
+          // mt: 4,
+        }),
       },
     },
+
     MuiStack: {
       defaultProps: {
         component: "div",

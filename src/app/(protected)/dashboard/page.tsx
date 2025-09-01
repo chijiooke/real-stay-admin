@@ -32,13 +32,13 @@ export default function DashboardPage() {
       icon: "hugeicons:house-01",
     },
     {
-      title: "Active Listing",
+      title: "Active Listings",
       value: analytics?.data?.listingStats?.active_listings,
       icon: "hugeicons:house-01",
     },
     {
-      title: "Inactive Listing",
-      value: analytics?.data?.listingStats?.active_listings,
+      title: "Inactive Listings",
+      value: analytics?.data?.listingStats?.inactive_listings,
       icon: "hugeicons:house-01",
     },
   ];
@@ -58,8 +58,6 @@ export default function DashboardPage() {
             <Card
               sx={{
                 p: 2,
-                border: "1px solid",
-                borderColor: theme?.palette?.secondary?.light,
               }}
             >
               <Stack
@@ -77,7 +75,7 @@ export default function DashboardPage() {
                 <Icon
                   icon={d?.icon}
                   height="15"
-                  color={theme.palette.primary.light}
+                  color={theme.palette.secondary.light}
                 />
               </Stack>
 
@@ -85,7 +83,10 @@ export default function DashboardPage() {
                 {isFetching ? (
                   <Skeleton
                     variant="text"
-                    sx={{ backgroundColor: "secondary.light", maxWidth:'100px' }}
+                    sx={{
+                      backgroundColor: "secondary.light",
+                      maxWidth: "100px",
+                    }}
                   />
                 ) : (
                   d?.value
@@ -99,8 +100,6 @@ export default function DashboardPage() {
         sx={{
           mt: 6,
           p: 2,
-          border: "1px solid",
-          borderColor: theme?.palette?.secondary?.light,
         }}
       >
         <Typography
@@ -113,8 +112,8 @@ export default function DashboardPage() {
         <PaginationComponent
           total={total}
           rowsPerPage={rowsPerPage}
-          handlePageChange={(_, val) => setPage(val)}
-          handleRowChange={(e) => setRowsPerPage(Number(e?.target?.value))}
+          handlePageChange={(val) => setPage(val)}
+          handleRowChange={(val) => setRowsPerPage(val)}
           pageNumber={page}
         />
       </Card>

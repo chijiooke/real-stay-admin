@@ -18,12 +18,13 @@ import { TableRowSkeletonLoader } from "@/app/components/table-utilities/TableRo
 import { User } from "@/app/endpoints/user/user-types";
 import { FC } from "react";
 import { theme } from "@/app/lib/theme";
+import Link from "next/link";
 
 export const UserTable: FC<{ users: User[]; isFetching: boolean }> = ({
   users,
   isFetching,
 }) => {
-  const tableHeaders = ["ID", "User", "Role", "Status"];
+  const tableHeaders = ["Phone Number", "User", "Role", "Status"];
 
   const status = {
     "": theme.palette.warning.light,
@@ -55,8 +56,16 @@ export const UserTable: FC<{ users: User[]; isFetching: boolean }> = ({
               return (
                 <TableRow key={indx} sx={{ whiteSpace: "nowrap" }}>
                   <TableCell>
-                    {u?.phone_number}
-                    <CopyText text={u?._id || ""} fontSize={12} />
+                    <Link
+                      href={"tel:" + u?.phone_number}
+                      style={{ textDecoration: "underline" }}
+                    >
+                      <Typography variant="body2">
+                        {" "}
+                        {u?.phone_number}{" "}
+                        <CopyText text={u?.phone_number || ""} fontSize={12} />
+                      </Typography>
+                    </Link>
                   </TableCell>
                   <TableCell>
                     <Stack>
@@ -87,7 +96,7 @@ export const UserTable: FC<{ users: User[]; isFetching: boolean }> = ({
                       }}
                       color={status[u?.status || ""]}
                     >
-                      {u?.status || "pending"}
+                      {u?.status || "-"}
                     </Typography>
                   </TableCell>
                 </TableRow>

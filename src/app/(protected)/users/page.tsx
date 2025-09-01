@@ -10,6 +10,7 @@ import {
   Button,
   Card,
   debounce,
+  Menu,
   MenuItem,
   Stack,
   Tab,
@@ -35,14 +36,15 @@ export default function DashboardPage() {
     search: undefined,
   });
 
-  const tabs = [
+  const userTypes = [
     { lebel: "All", value: "" },
     { lebel: "Guests", value: "guest" },
     { lebel: "Users", value: "host" },
   ];
 
   const statuses = [
-    { lebel: "Pending", value: "" },
+    { lebel: "All", value: "" },
+    { lebel: "Pending", value: "pending" },
     { lebel: "Active", value: "active" },
     { lebel: "Inactive", value: "inactive" },
   ];
@@ -84,27 +86,35 @@ export default function DashboardPage() {
         decription="Manage guests, hosts, and user accounts"
       />
       <Tabs
-        value={searchParams?.user_type}
+        value={searchParams?.user_type || ""}
         onChange={(_, val) =>
           setSearchParams({
             ...searchParams,
             user_type: sanitizeFilterQuery(val),
           })
         }
-        sx={{ mt: 1 }}
+        sx={{ mt: 2 }}
       >
-        {tabs.map((t, i) => (
+        {userTypes.map((t, i) => (
           <Tab label={t.lebel} value={t.value} key={i} />
         ))}
       </Tabs>
 
       <Stack sx={{ mt: 3 }}>
         {" "}
-        <Stack sx={{ display: "flex", flexDirection: "row", gap: 1 }}>
+        <Stack
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            flexDirection: "row",
+            gap: 1,
+          }}
+        >
           <TextField
             onChange={(e) => debounceSearch(e?.target?.value)}
             placeholder="search users.."
             size="small"
+            color="secondary"
             margin="none"
             sx={{
               borderRadius: "20px",
@@ -124,24 +134,62 @@ export default function DashboardPage() {
               ),
             }}
           />
+
           <Button
-            size="small"
+            id="filter-by-status-btn"
+            aria-controls={open ? "filter-by-status" : undefined}
+            aria-haspopup="true"
+            aria-expanded={open ? "true" : undefined}
+            color="secondary"
             sx={{
-              backgroundColor: "secondary.light",
               "&:hover": {
-                backgroundColor: "primary.main",
-                color: "primary.dark",
+                bgcolor: theme?.palette?.secondary?.main,
+                color: theme?.palette?.secondary?.contrastText,
               },
-              width: "100px",
             }}
-            startIcon={<Icon icon="hugeicons:filter" width="18" height="18" />}
-            onClick={(e) => {
-              e.stopPropagation();
-              handleClick(e);
-            }}
+            size="small"
+            onClick={handleClick}
+            startIcon={
+              <Icon
+                icon="hugeicons:filter"
+                width="18"
+                height="18"
+                // color={theme?.palette?.primary?.light}
+              />
+            }
+            variant="contained"
           >
             Status
           </Button>
+          <Menu
+            id="filter-by-status"
+            anchorEl={anchorEl}
+            open={open}
+            onClose={() => {
+              handleClickAway();
+            }}
+            slotProps={{
+              list: {
+                "aria-labelledby": "filter-by-status-btn",
+              },
+            }}
+          >
+            {statuses?.map((s, key) => (
+              <MenuItem
+                key={key}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleClickAway();
+                  setSearchParams({
+                    ...searchParams,
+                    status: sanitizeFilterQuery(s.value),
+                  });
+                }}
+              >
+                {s?.lebel}
+              </MenuItem>
+            ))}
+          </Menu>
         </Stack>
       </Stack>
 
@@ -149,8 +197,6 @@ export default function DashboardPage() {
         sx={{
           mt: 6,
           p: 2,
-          border: "1px solid",
-          borderColor: theme?.palette?.secondary?.light,
         }}
       >
         <Typography
@@ -163,31 +209,11 @@ export default function DashboardPage() {
         <PaginationComponent
           total={data?.data?.pagination?.total_items || 0}
           rowsPerPage={rowsPerPage}
-          handlePageChange={(_, val) => setPage(val)}
-          handleRowChange={(e) => setRowsPerPage(Number(e?.target?.value))}
+          handlePageChange={(val) => setPage(val)}
+          handleRowChange={(val) => setRowsPerPage(val)}
           pageNumber={page}
         />
       </Card>
-      <ContextMenu
-        handleClickAway={handleClickAway}
-        open={open}
-        anchorEl={anchorEl}
-      >
-        <Fragment>
-          {statuses?.map((s, key) => (
-            <MenuItem
-              key={key}
-              onClick={(e) => {
-                e.stopPropagation();
-                handleClickAway();
-                setSearchParams({ ...searchParams, status: s.value });
-              }}
-            >
-              {s?.lebel}
-            </MenuItem>
-          ))}
-        </Fragment>
-      </ContextMenu>
     </Stack>
   );
 }

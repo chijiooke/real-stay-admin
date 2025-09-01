@@ -2,10 +2,7 @@
 
 import { Icon } from "@iconify/react";
 import { LoadingButton } from "@mui/lab";
-import {
-    TextField,
-    Typography
-} from "@mui/material";
+import { TextField, Typography } from "@mui/material";
 import Card from "@mui/material/Card";
 import { useFormik } from "formik";
 import Image from "next/image";
@@ -42,7 +39,7 @@ export default function SignInPage() {
           />
           <Typography
             className="font-bold"
-            color="primary.light"
+            color="secondary.light"
             align="center"
           >
             Reset password
@@ -53,7 +50,9 @@ export default function SignInPage() {
             className="mb-2"
             placeholder="enter email"
           />{" "}
-          <LoadingButton variant="contained">Reset password</LoadingButton>
+          <LoadingButton variant="contained" color="secondary">
+            Reset password
+          </LoadingButton>
           <Link
             href={"/sign-in"}
             className="text-[#FFFFFFB2] text-xs text-center hover:text-white hover:underline flex items-center justify-center gap-1"

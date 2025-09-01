@@ -5,6 +5,7 @@ import { LoadingButton } from "@mui/lab";
 import {
   IconButton,
   InputAdornment,
+  Stack,
   TextField,
   Tooltip,
   Typography,
@@ -80,58 +81,67 @@ export default function SignInPage() {
           />
           <Typography
             className="font-bold"
-            color="primary.light"
+            color="secondary.light"
             align="center"
           >
             Real Stay Admin
           </Typography>
-          <TextField
-            variant="outlined"
-            label="Email"
-            className="mb-2"
-            placeholder="enter email"
-            value={formik.values.email}
-            {...getFormikTextFieldProps(formik, "email")}
-          />{" "}
-          <TextField
-            variant="outlined"
-            label="Password"
-            type={showPassword ? "text" : "password"}
-            placeholder="enter password"
-            className="placeholder:text-white"
-            value={formik.values.password}
-            {...getFormikTextFieldProps(formik, "password")}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton onClick={handleToggle} edge="end">
-                    {showPassword ? (
-                      <Tooltip title="hide" arrow>
-                        <Icon
-                          icon="material-symbols-light:visibility-off-outline-rounded"
-                          width="18"
-                          height="18"
-                          color={theme.palette.primary.light}
-                        />
-                      </Tooltip>
-                    ) : (
-                      <Tooltip title="show" arrow>
-                        <Icon
-                          icon="material-symbols-light:visibility-outline"
-                          width="18"
-                          height="18"
-                          color={theme.palette.primary.light}
-                        />
-                      </Tooltip>
-                    )}
-                  </IconButton>
-                </InputAdornment>
-              ),
-            }}
-          />
+          <Stack sx={{ display: "flex", flexDirection: "column", gap: 5 }}>
+            <TextField
+              variant="outlined"
+              label="Email"
+              size="small"
+              // className="mb-2"
+              color="secondary.main"
+              placeholder="enter email"
+              value={formik.values.email}
+              {...getFormikTextFieldProps(formik, "email")}
+            />{" "}
+            <TextField
+              size="small"
+              variant="outlined"
+              label="Password"
+              color="secondary.light"
+              type={showPassword ? "text" : "password"}
+              placeholder="enter password"
+              value={formik.values.password}
+              {...getFormikTextFieldProps(formik, "password")}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton onClick={handleToggle} edge="end">
+                      {showPassword ? (
+                        <Tooltip title="hide" arrow>
+                          <Icon
+                            icon="material-symbols-light:visibility-off-outline-rounded"
+                            width="18"
+                            height="18"
+                            color={theme.palette.secondary.light}
+                          />
+                        </Tooltip>
+                      ) : (
+                        <Tooltip title="show" arrow>
+                          <Icon
+                            icon="material-symbols-light:visibility-outline"
+                            width="18"
+                            height="18"
+                            color={theme.palette.secondary.light}
+                          />
+                        </Tooltip>
+                      )}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
+          </Stack>
+
           <LoadingButton
             loading={isLoading}
             variant="contained"
+            
+            color="secondary"
+            sx={{ mt: 2 }}
             onClick={() => formik.handleSubmit()}
           >
             Sign In

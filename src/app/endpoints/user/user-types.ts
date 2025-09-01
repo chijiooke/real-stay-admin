@@ -9,6 +9,7 @@ export interface User {
   user_type?: string;
   phone_number?: string;
   status?: string;
+  createdAt?: string; // ISO date
 }
 export interface UserResponse {
   user: User;

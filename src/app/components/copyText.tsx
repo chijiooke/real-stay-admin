@@ -4,7 +4,7 @@ import { FC } from 'react';
 import { toast } from 'react-toastify';
 import { theme } from '../lib/theme';
 
-export const CopyText: FC<{ text: string; fontSize?: number; color?: string }> = ({ text, fontSize = 20, color = theme.palette.primary.main }) => {
+export const CopyText: FC<{ text: string; fontSize?: number; color?: string }> = ({ text, fontSize = 20, color = theme.palette.secondary.main }) => {
     return (
         <Tooltip title="copy to clipboard" arrow>
             <IconButton

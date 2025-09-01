@@ -29,10 +29,14 @@ export default function RootLayout({
           href="https://fonts.gstatic.com"
           crossOrigin="anonymous"
         />
+
+        {/* ✅ Load full weight range for Playwrite */}
         <link
-          href="https://fonts.googleapis.com/css2?family=Playwrite+US+Trad:wght@100..400&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Playwrite+US+Trad:wght@100..900&display=swap"
           rel="stylesheet"
         />
+
+        {/* ✅ Geist already supports full weight range */}
         <link
           href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap"
           rel="stylesheet"

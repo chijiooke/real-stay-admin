@@ -84,7 +84,7 @@ export default function ProtectedLayout({
         sx={{
           // color: "#fff",
           zIndex: (theme) => theme.zIndex.drawer + 1,
-          backgroundColor: theme?.palette?.primary?.dark,
+          backgroundColor: theme?.palette?.primary?.main,
         }}
       >
         <Stack
@@ -117,7 +117,7 @@ export default function ProtectedLayout({
     <div>
       <CssBaseline />
       <Toolbar
-        sx={{ borderBottom: `1px solid ${theme?.palette?.secondary?.light}` }}
+        sx={{ borderBottom: `1px solid ${theme?.palette?.primary?.light}` }}
       >
         <Stack flex="1" direction="row" gap={1}>
           <Image src="/edge-tech-logo.svg" width={35} height={35} alt="logo" />
@@ -126,11 +126,11 @@ export default function ProtectedLayout({
               className=" font-semibold text-lg"
               variant="body1"
               sx={{ fontWeight: "600" }}
-              color="primary.light"
+              color="secondary.light"
             >
               Edge-Tech Innovations
             </Typography>
-            <Typography color="primary.main" variant="body2">
+            <Typography color="secondary.main" variant="body2">
               Realstay admin panel
             </Typography>
           </Stack>
@@ -140,7 +140,7 @@ export default function ProtectedLayout({
         {menuItems.map((m, i) => (
           <Stack key={i}>
             <Typography
-              sx={{ color: theme?.palette?.primary?.main, pl: 2, mt: 3 }}
+              sx={{ color: theme?.palette?.secondary?.main, pl: 2, mt: 3 }}
               variant="caption"
             >
               {m?.heading}
@@ -154,7 +154,7 @@ export default function ProtectedLayout({
                 sx={{ px: 2, py: 1 }}
               >
                 <ListItemIcon
-                  sx={{ minWidth: 32, color: theme?.palette?.primary?.light }}
+                  sx={{ minWidth: 32, color: theme?.palette?.secondary?.light }}
                 >
                   <Icon icon={menu.icon} width="18" height="18" />
                 </ListItemIcon>
@@ -162,7 +162,7 @@ export default function ProtectedLayout({
                   primary={menu.label}
                   primaryTypographyProps={{
                     fontSize: "0.875rem",
-                    color: theme?.palette?.primary?.light,
+                    color: theme?.palette?.secondary?.light,
                   }}
                 />
               </ListItemButton>
@@ -182,7 +182,7 @@ export default function ProtectedLayout({
         position="fixed"
         sx={{
           zIndex: (theme) => theme.zIndex.drawer - 1,
-          borderRight: `1px solid ${theme?.palette?.secondary?.light}`,
+          borderRight: `1px solid ${theme?.palette?.primary?.dark}`,
           backgroundColor: theme?.palette?.primary?.dark,
         }}
       >
@@ -240,7 +240,7 @@ export default function ProtectedLayout({
             display: { xs: "block", sm: "none" },
             "& .MuiDrawer-paper": {
               width: drawerWidth,
-              borderRight: `1px solid ${theme?.palette?.secondary?.light}`,
+              borderRight: `1px solid ${theme?.palette?.primary?.dark}`,
               backgroundColor: theme?.palette?.primary?.dark,
             },
           }}
@@ -346,7 +346,7 @@ export default function ProtectedLayout({
             "& .MuiDrawer-paper": {
               width: drawerWidth,
               boxSizing: "border-box",
-              borderRight: `1px solid ${theme?.palette?.secondary?.light}`,
+              borderRight: `1px solid ${theme?.palette?.primary?.light}`,
               backgroundColor: theme?.palette?.primary?.dark,
             },
           }}
@@ -355,7 +355,7 @@ export default function ProtectedLayout({
           {drawer}
           <Stack className="p-2 absolute bottom-0 w-full gap-3">
             <Typography
-              color="primary.light"
+              color="secondary.light"
               className="flex items-center opacity-50 font-bold"
               variant="body2"
             >
@@ -387,7 +387,7 @@ export default function ProtectedLayout({
                 <Avatar
                   src={user?.image_url}
                   alt={user?.first_name?.[0] || ""}
-                  sx={{ bgcolor: "primary.main" }}
+                  sx={{ bgcolor: "secondary.main" }}
                 />
                 <Stack
                   sx={{
@@ -397,16 +397,16 @@ export default function ProtectedLayout({
                     ml: 1,
                   }}
                 >
-                  <Typography variant="body2" color="primary.light">
+                  <Typography variant="body2" color="secondary.light">
                     {`${user?.first_name} ${user?.last_name}`}
                   </Typography>
-                  <Typography variant="caption" color="primary.light">
+                  <Typography variant="caption" color="secondary.light">
                     {user?.email}
                   </Typography>
                 </Stack>
               </Stack>{" "}
               <Icon
-                color={theme.palette.primary.light}
+                color={theme.palette.secondary.light}
                 icon="mingcute:arrows-right-line"
                 width="18"
                 height="18"
@@ -428,7 +428,7 @@ export default function ProtectedLayout({
                   <ListItemIcon
                     sx={{
                       minWidth: 32,
-                      color: menu.color || theme?.palette?.primary?.light,
+                      color: menu.color || theme?.palette?.secondary?.light,
                     }}
                   >
                     <Icon icon={menu.icon} width="18" height="18" />
@@ -437,7 +437,7 @@ export default function ProtectedLayout({
                     primary={menu.label}
                     primaryTypographyProps={{
                       fontSize: "0.875rem",
-                      color: menu.color || theme?.palette?.primary?.light,
+                      color: menu.color || theme?.palette?.secondary?.light,
                     }}
                   />
                 </ListItemButton>

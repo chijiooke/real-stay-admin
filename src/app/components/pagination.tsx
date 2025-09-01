@@ -1,58 +1,15 @@
-// import { Box, Pagination, TablePagination } from "@mui/material";
-// import { FC } from "react";
-
-// export const PaginationComponent: FC<{
-//   total: number;
-//   pageNumber: number;
-//   rowsPerPage: number;
-//   handlePageChange: (e: unknown, value: number) => void;
-//   handleRowChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
-// }> = ({
-//   total,
-//   pageNumber,
-//   rowsPerPage,
-//   handlePageChange,
-//   handleRowChange,
-// }) => {
-//   return (
-//     <Box
-//       sx={{
-//         display: "flex",
-//         alignItems: "center",
-//         width: "100%",
-//         justifyContent: "space-between",
-//         mt: 2,
-//       }}
-//     >
-//       <TablePagination
-//         component="div"
-//         count={total}
-//         page={pageNumber - 1}
-//         onPageChange={(e, value) => handlePageChange(e, value)}
-//         rowsPerPage={rowsPerPage}
-//         onRowsPerPageChange={(e) => handleRowChange(e)}
-
-//       />
-//       <Pagination
-//         count={Math.ceil(total / rowsPerPage)}
-//         shape="rounded"
-//         onChange={(e, value) => handlePageChange(e, value)}
-//       />
-//     </Box>
-//   );
-// };
-
-// import theme from '@/styles/theme';
+import { Icon } from "@iconify/react/dist/iconify.js";
 import {
   Box,
-  Pagination,
-  TablePagination,
-  useMediaQuery,
   IconButton,
+  MenuItem,
+  Pagination,
+  Select,
+  Stack,
+  Typography,
 } from "@mui/material";
 import React, { FC } from "react";
 import { theme } from "../lib/theme";
-import { Icon } from "@iconify/react/dist/iconify.js";
 
 interface CustomPaginationActionsProps {
   count: number;
@@ -165,25 +122,12 @@ export const CustomPaginationActions: React.FC<
   );
 };
 
-/**
- * Renders a pagination component.
- *
- * @param {number} total - The total number of items to be paginated.
- * @param {number} pageNumber - The current page number.
- * @param {number} rowsPerPage - The number of rows to be displayed per page.
- * @param {(e: any, value: number) => void} handlePageChange - The callback function to handle page changes.
- * @param {(e: any) => void} handleRowChange - The callback function to handle row changes.
- * @return {JSX.Element} The rendered pagination component.
- */
-
 export const PaginationComponent: FC<{
   total: number;
   pageNumber: number;
   rowsPerPage: number;
-  handlePageChange: (e: unknown, value: number) => void;
-  handleRowChange: (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => void;
+  handlePageChange: (value: number) => void;
+  handleRowChange: (val: number) => void;
 }> = ({
   total,
   pageNumber,
@@ -191,34 +135,76 @@ export const PaginationComponent: FC<{
   handlePageChange,
   handleRowChange,
 }) => {
-  const lgDown = useMediaQuery(theme.breakpoints.down("lg"));
   return (
     <Box
       sx={{
         display: "flex",
         alignItems: "center",
         width: "100%",
-        justifyContent: "end",
+        justifyContent: "space-between",
+
         mt: 2,
       }}
     >
-      <TablePagination
-        rowsPerPageOptions={[2, 5, 10, 25, 50, 100]}
-        component="div"
-        count={total}
-        page={pageNumber - 1}
-        onPageChange={(e, value) => handlePageChange(e, value)}
+      <Typography
+        variant="body2"
+        color="secondary.light"
+        sx={{ display: { xs: "none", sm: "block" } }}
+      >
+        {`Total Count: ${total.toLocaleString()}`}
+      </Typography>
+      <PaginationExtension
+        handlePageChange={handlePageChange}
+        handleRowsPerPageChange={handleRowChange}
+        pageNumber={pageNumber}
         rowsPerPage={rowsPerPage}
-        onRowsPerPageChange={(e) => handleRowChange(e)}
+        total={total}
       />
-      {!lgDown && (
-        <Pagination
-          page={pageNumber}
-          count={Math.ceil(total / rowsPerPage)}
-          shape="rounded"
-          onChange={(e, value) => handlePageChange(e, value)}
-        />
-      )}
     </Box>
   );
 };
+
+function PaginationExtension({
+  pageNumber,
+  rowsPerPage,
+  total,
+  handlePageChange,
+  handleRowsPerPageChange,
+}) {
+  return (
+    <Stack
+      direction="row"
+      sx={{ justifyContent: { xs: "center", sm: "space-between" } }}
+      alignItems="center"
+      spacing={2}
+      // mt={2}
+    >
+      <Typography variant="body2" color="secondary.light">
+        Rows Per Page:
+      </Typography>
+      <Select
+        color="secondary"
+        variant="outlined"
+        sx={{ color: "secondary.light", borderColor: "secondary.light" }}
+        value={rowsPerPage}
+        onChange={(e) => {
+          handleRowsPerPageChange(Number(e.target.value));
+        }}
+        size="small"
+      >
+        {[10, 20, 50, 100].map((size) => (
+          <MenuItem key={size} value={size} color="secondary">
+            {size}
+          </MenuItem>
+        ))}
+      </Select>
+
+      <Pagination
+        page={pageNumber}
+        count={Math.ceil(total / rowsPerPage)}
+        shape="rounded"
+        onChange={(_, value) => handlePageChange(value)}
+      />
+    </Stack>
+  );
+}
