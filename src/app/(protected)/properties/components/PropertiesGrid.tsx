@@ -15,11 +15,13 @@ import {
   Typography,
 } from "@mui/material";
 import React, { FC } from "react";
+import { useRouter } from "next/navigation";
 
 const PropertiesGrid: FC<{
   listings: Listing[];
   isFetching: boolean;
 }> = ({ listings, isFetching }) => {
+  const router = useRouter();
   return (
     <div>
       <Grid2 container spacing={2} sx={{ my: 2 }}>
@@ -50,6 +52,9 @@ const PropertiesGrid: FC<{
                 sx={{ width: "100%" }}
               >
                 <Card
+                  onClick={() => {
+                    router.push("/properties/" + listing._id);
+                  }}
                   sx={{
                     height: "100%", // let it fill the grid cell vertically if needed
                     width: "100%", // full width inside the grid cell

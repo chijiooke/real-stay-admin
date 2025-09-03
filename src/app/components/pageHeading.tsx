@@ -1,14 +1,41 @@
-import { Skeleton, Stack, Typography } from "@mui/material";
+import { Button, IconButton, Skeleton, Stack, Typography } from "@mui/material";
 import React, { FC } from "react";
 import { theme } from "../lib/theme";
+import { Icon } from "@iconify/react/dist/iconify.js";
+
+import { useRouter } from "next/navigation";
 
 export const PageHeading: FC<{
   title?: string;
   decription?: string;
   isfetching?: boolean;
-}> = ({ title, decription, isfetching }) => {
+  showBackButton?: boolean;
+}> = ({ title, decription, isfetching, showBackButton = true }) => {
+  const router = useRouter();
   return (
     <Stack>
+      {showBackButton && (
+        <Stack alignItems={"start"} justifyContent={"start"} mb={2}>
+          <Button
+            onClick={() => {
+              router.back();
+            }}
+            fullWidth={false}
+            variant="text"
+            color="secondary"
+            startIcon={
+              <Icon
+                icon="material-symbols:arrow-back-rounded"
+                width="18"
+                height="18"
+              />
+            }
+          >
+            go back
+          </Button>
+        </Stack>
+      )}
+
       <Typography color={theme.palette.secondary.light} variant="h5">
         {}
 

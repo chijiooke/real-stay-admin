@@ -11,6 +11,8 @@ import {
   Typography,
 } from "@mui/material";
 
+import { useRouter } from "next/navigation";
+
 import { CopyText } from "@/app/components/copyText";
 import { EmptyTableRows } from "@/app/components/table-utilities/EmptyTable";
 import { TableRowSkeletonLoader } from "@/app/components/table-utilities/TableRowSkeletonLoader";
@@ -30,6 +32,7 @@ export const UserTable: FC<{ users: User[]; isFetching: boolean }> = ({
     "": theme.palette.warning.light,
     active: theme.palette.success.light,
   };
+  const router = useRouter();
 
   return (
     <TableContainer sx={{}}>
@@ -54,7 +57,13 @@ export const UserTable: FC<{ users: User[]; isFetching: boolean }> = ({
           ) : (
             users?.map((u, indx) => {
               return (
-                <TableRow key={indx} sx={{ whiteSpace: "nowrap" }}>
+                <TableRow
+                  key={indx}
+                  sx={{ whiteSpace: "nowrap" }}
+                  onClick={() => {
+                    router.push("/users/" + u._id);
+                  }}
+                >
                   <TableCell>
                     <Link
                       href={"tel:" + u?.phone_number}

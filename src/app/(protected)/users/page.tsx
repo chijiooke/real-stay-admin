@@ -82,6 +82,7 @@ export default function DashboardPage() {
   return (
     <Stack>
       <PageHeading
+        showBackButton={false}
         title="User"
         decription="Manage guests, hosts, and user accounts"
       />

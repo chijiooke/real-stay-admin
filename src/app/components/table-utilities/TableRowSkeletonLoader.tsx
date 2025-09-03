@@ -5,11 +5,14 @@ export const TableRowSkeletonLoader: FC<{
   noOfColumns: number;
   noOfRows?: number;
 }> = ({ noOfColumns, noOfRows = 10 }) => {
-  return [...Array(noOfRows)].map((it, i) => (
+  return [...Array(noOfRows)].map((_, i) => (
     <TableRow key={i}>
-      {[...Array(noOfColumns)].map((col, i) => (
+      {[...Array(noOfColumns)].map((_, i) => (
         <TableCell variant="body" key={i}>
-          <Skeleton variant="text" sx={{ fontSize: "1rem" }} />
+          <Skeleton
+            variant="text"
+            sx={{ fontSize: "1rem", backgroundColor: "primary.light" }}
+          />
         </TableCell>
       ))}
     </TableRow>

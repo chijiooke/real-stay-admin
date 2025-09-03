@@ -112,6 +112,7 @@ export default function DashboardPage() {
   return (
     <Stack>
       <PageHeading
+        showBackButton={false}
         title="Properties"
         decription="Manage properties listed by hosts"
       />
@@ -145,9 +146,10 @@ export default function DashboardPage() {
               <Typography className="text-white" variant="h4" sx={{}}>
                 {isFetching ? (
                   <Skeleton
+                    animation={"pulse"}
                     variant="text"
                     sx={{
-                      backgroundColor: "secondary.light",
+                      backgroundColor: "primary.light",
                       maxWidth: "100px",
                     }}
                   />
@@ -227,14 +229,12 @@ export default function DashboardPage() {
 
       <Stack>
         <Tabs
-        
           value={activeView}
           onChange={(_, val) => setActiveView(val)}
           sx={{ mt: 4 }}
         >
           {view.map((v, i) => (
             <Tab
-            
               sx={{
                 // p: 0,
                 maxWidth: "20px",

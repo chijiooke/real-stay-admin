@@ -8,6 +8,7 @@ import {
   Box,
   Stack,
   Slider,
+  DialogActions,
 } from "@mui/material";
 import { Icon } from "@iconify/react";
 
@@ -53,7 +54,7 @@ export default function ImageViewer({
       onClose={onClose}
       maxWidth="lg"
       PaperProps={{
-        sx: { background: "transparent", boxShadow: "none" },
+        sx: { backgroundColor: "primary.main", boxShadow: "none" },
       }}
     >
       {/* Close Button */}
@@ -112,31 +113,31 @@ export default function ImageViewer({
         }}
       >
         {/* Main Image */}
-        <Box
-          component="img"
-          src={photos[current]}
-          alt={`photo-${current}`}
-          sx={{
-            maxHeight: "70vh",
-            maxWidth: "80vw",
-            objectFit: "contain",
-            transform: `scale(${zoom})`,
-            transition: "transform 0.3s ease",
-            borderRadius: 2,
-          }}
-        />
+        <Stack sx={{ maxHeight: "70vh", maxWidth: "50vw", overflow: "scroll" }}>
+          {" "}
+          <Box
+            component="img"
+            src={photos[current]}
+            alt={`photo-${current}`}
+            sx={{
+              objectFit: "contain",
+              transform: `scale(${zoom})`,
+              transition: "transform 0.3s ease",
+              borderRadius: 2,
+            }}
+          />
+        </Stack>
 
         {/* Zoom Slider */}
-        <Slider
-          value={zoom}
-          min={1}
-          max={3}
-          step={0.1}
-          onChange={(_, val) => setZoom(val as number)}
-          sx={{ width: 200, mt: 2 }}
-          color="secondary"
-        />
-
+      </DialogContent>
+      <DialogActions
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
         {/* Thumbnails */}
         <Stack direction="row" gap={1} mt={2} flexWrap="wrap">
           {photos.map((src, i) => (
@@ -158,7 +159,16 @@ export default function ImageViewer({
             />
           ))}
         </Stack>
-      </DialogContent>
+        <Slider
+          value={zoom}
+          min={1}
+          max={3}
+          step={0.1}
+          onChange={(_, val) => setZoom(val as number)}
+          sx={{ width: 200, mt: 2 }}
+          color="secondary"
+        />
+      </DialogActions>
     </Dialog>
   );
 }
