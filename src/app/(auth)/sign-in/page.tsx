@@ -1,5 +1,8 @@
 "use client";
 
+import { authApi } from "@/app/endpoints/auth/auth-api-slice";
+import { useUserSession } from "@/app/lib/useUserSession";
+import { updateAuth } from "@/app/store/modules/auth/slices/auth-slice";
 import { Icon } from "@iconify/react";
 import { LoadingButton } from "@mui/lab";
 import {
@@ -16,14 +19,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { toast } from "react-toastify";
 import * as Yup from "yup";
 import { theme } from "../../lib/theme";
 import { getFormikTextFieldProps } from "../../utils/formik-helpers";
-import { authApi } from "@/app/endpoints/auth/auth-api-slice";
-import { toast } from "react-toastify";
-import { useUserSession } from "@/app/lib/useUserSession";
-import { useDispatch } from "react-redux";
-import { updateAuth } from "@/app/store/modules/auth/slices/auth-slice";
 
 export default function SignInPage() {
   const router = useRouter();
@@ -39,6 +39,7 @@ export default function SignInPage() {
       router.replace("/dashboard");
     }
   }, [isAuthenticated, router]);
+
   const formik = useFormik({
     initialValues: { email: "", password: "" },
     enableReinitialize: true,
@@ -46,31 +47,34 @@ export default function SignInPage() {
       email: Yup.string().required("email is required"),
       password: Yup.string().required("password is required"),
     }),
-    onSubmit: (data) => {
-      loginMutation({ data })
+    onSubmit: async (data) => {
+      await loginMutation({ data })
         .unwrap()
         .then((response) => {
-          console.log("Login response:", response);
           toast.success("Login successful");
+
           router.push("/dashboard");
+
           localStorage.setItem("user_id", response?.data?.user?.id || "");
           localStorage.setItem("token", response?.data?.access_token || "");
+
           dispatch(
             updateAuth({
               token: response?.data?.access_token,
-              user: response?.data?.user,
+              user: null, //this allows us fetch latest at protected route
             })
           );
         })
-        .catch((error) => {
-          toast.error(error?.data?.defaultUserMessage || "Login failed");
+        .catch((err) => {
+          toast.error(err?.data?.data?.message || "Login failed");
+          return;
         });
     },
   });
 
   return (
     <div className="flex min-h-screen items-center justify-center  ">
-      <form>
+      <div>
         <Card className="flex flex-col gap-4 p-8 md:w-[400px] w-[300px]">
           <Image
             src="/edge-tech-logo.svg"
@@ -139,7 +143,7 @@ export default function SignInPage() {
           <LoadingButton
             loading={isLoading}
             variant="contained"
-            
+            type="button"
             color="secondary"
             sx={{ mt: 2 }}
             onClick={() => formik.handleSubmit()}
@@ -154,7 +158,7 @@ export default function SignInPage() {
             forgot password
           </Link>
         </Card>
-      </form>
+      </div>
 
       <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2">
         <Typography variant="body2" color="#FFFFFFB2" align="center">

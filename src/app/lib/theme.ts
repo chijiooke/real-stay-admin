@@ -184,7 +184,6 @@ export const theme = createTheme({
           "& .MuiInputBase-input": {
             fontSize: ".75rem",
             color: theme.palette.secondary.main, // input text color
-            // padding: "12px 14px",
             borderRadius: "10px",
             "&::placeholder": {
               color: theme.palette.secondary.main, // placeholder color
@@ -226,14 +225,86 @@ export const theme = createTheme({
         }),
       },
     },
-
-    MuiOutlinedInput: {
+    MuiInputAdornment: {
       styleOverrides: {
-        root: {
-          borderRadius: "8px",
-        },
+        root: ({ theme }) => ({
+          color: theme.palette.secondary.main, // icon color
+          cursor: "pointer", // pointer on hover
+          "&:hover": {
+            color: theme.palette.primary.main, // optional hover color
+          },
+        }),
       },
     },
+    MuiSvgIcon: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+          fontSize: "1rem", // adjust size
+          // color: theme.palette.secondary.lighter, // default color
+        }),
+      },
+    },
+
+    MuiPickersSectionList: {
+      
+      styleOverrides: {
+        root: ({ theme }) => ({
+          fontSize: ".75rem",
+          color: theme.palette.secondary.main,
+          padding: "12px 14px",
+          minHeight: "45px",
+          display: "flex",
+          alignItems: "center",
+          borderColor: theme.palette.secondary.main,
+
+          "& .MuiPickersSectionList-section": {
+            color: theme.palette.secondary.main,
+            borderColor: theme.palette.secondary.main,
+          },
+
+          "& .MuiPickersSectionList-sectionContent": {
+            fontSize: ".75rem",
+          },
+
+          "& .MuiPickersSectionList-sectionSeparator": {
+            color: theme.palette.secondary.main,
+            opacity: 0.6,
+          },
+
+          "&.Mui-disabled": {
+            color: theme.palette.secondary.main,
+            opacity: 0.5,
+          },
+          "& .MuiSvgIcon-root": {
+            color: theme.palette.secondary.main,
+            // opacity: 0.5,
+          },
+        }),
+      },
+    },
+    MuiOutlinedInput: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+          borderRadius: "8px",
+          alignItems: "center",
+          borderColor: theme.palette.secondary.main,
+
+          "& fieldset": {
+            borderColor: theme.palette.secondary.main,
+            legend: { display: "none" },
+          },
+
+          "&:hover fieldset": {
+            borderColor: theme.palette.secondary.main,
+          },
+
+          "&.Mui-focused fieldset": {
+            borderColor: theme.palette.secondary.main,
+          },
+        }),
+      },
+    },
+
     MuiSelect: {
       styleOverrides: {
         root: {

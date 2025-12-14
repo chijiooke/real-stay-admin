@@ -17,3 +17,13 @@ export interface AuthResponse {
   data: Analytics;
   success: boolean;
 }
+
+export interface StatsResponse {
+  data: Record<string, StatsItem>;
+  success: boolean;
+}
+
+export interface StatsItem {
+  key: string;
+  value: number;
+}

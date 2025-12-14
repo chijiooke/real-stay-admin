@@ -1,3 +1,5 @@
+import { LocalizationProvider } from "@mui/lab";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import timezone from "dayjs/plugin/timezone";
@@ -8,6 +10,7 @@ import "./globals.css";
 import { AxiosInterceptorLoader } from "./providers/interceptor";
 import { ReduxProvider } from "./providers/redux-provider";
 import { MuiThemeProvider } from "./providers/theme-provider";
+import { MuiDateProvider } from "./providers/mui-date-provider";
 
 // Setup dayjs plugins
 dayjs.extend(relativeTime);
@@ -30,15 +33,13 @@ export default function RootLayout({
           crossOrigin="anonymous"
         />
 
-        {/* ✅ Load full weight range for Playwrite */}
         <link
-          href="https://fonts.googleapis.com/css2?family=Playwrite+US+Trad:wght@100..900&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Playwrite+US+Trad:wght@100;300;400;700&display=swap"
           rel="stylesheet"
         />
 
-        {/* ✅ Geist already supports full weight range */}
         <link
-          href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Geist:wght@100;400;700&display=swap"
           rel="stylesheet"
         />
       </head>
@@ -46,8 +47,12 @@ export default function RootLayout({
         <ReduxProvider>
           <MuiThemeProvider>
             <AxiosInterceptorLoader />
-            {children}
-            <ToastContainer position="top-right" autoClose={3000} />
+            <MuiDateProvider>{children}</MuiDateProvider>
+            <ToastContainer
+              position="top-right"
+              autoClose={3500}
+              theme="dark"
+            />
           </MuiThemeProvider>
         </ReduxProvider>
       </body>

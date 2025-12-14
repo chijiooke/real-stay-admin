@@ -12,8 +12,8 @@ export const setupInterceptors = () => {
           config.headers.Authorization = `Bearer ${token}`;
         }
 
-        config.headers["platform"] = "web";
-        config.headers["country"] = "NG";
+        // config.headers["platform"] = "web";
+        // config.headers["country"] = "NG";
       } catch (err) {
         console.error("Request interceptor error:", err);
       }
@@ -22,6 +22,7 @@ export const setupInterceptors = () => {
     },
     (error) => {
       // Request error
+      console.error("Request interceptor error:", error);
       return Promise.reject(error);
     }
   );

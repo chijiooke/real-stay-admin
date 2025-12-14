@@ -4,9 +4,23 @@ import { PaginationComponent } from "@/app/components/pagination";
 import { analyticApi } from "@/app/endpoints/analytics/analytics-api-slice";
 import { theme } from "@/app/lib/theme";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import { Card, Grid2, Skeleton, Stack, Typography } from "@mui/material";
-import { useState } from "react";
+import {
+  Card,
+  Grid2,
+  InputAdornment,
+  Skeleton,
+  Stack,
+  Tab,
+  Tabs,
+  TextField,
+  Typography,
+} from "@mui/material";
+import { useEffect, useState } from "react";
 import { UserTable } from "./components/UserTable";
+import StatsLineChart from "./components/Chart";
+import { getStatsArray } from "@/app/utils/chart-helper";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import dayjs from "dayjs";
 
 export default function DashboardPage() {
   const { data: analytics, isFetching } = analyticApi.useAnalyticsQuery({});
@@ -46,6 +60,23 @@ export default function DashboardPage() {
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+
+  const [statsType, setStatType] = useState<"monthly" | "daily">("daily");
+  const [params, setParams] = useState<{
+    year: undefined | number;
+    start_date: undefined | string;
+    end_date: undefined | string;
+  }>({
+    year: undefined,
+    start_date: dayjs().subtract(1, "month").format("YYYY/MM/DD"),
+    end_date: dayjs().format("YYYY/MM/DD"),
+  });
+
+  const { data: dailyListingData, isFetching: isFetchingDailyListingData } =
+    analyticApi.useDailyListingStatsQuery({ params });
+
+  const { data: monthlylistingData, isFetching: isFetchingMonthlyListingData } =
+    analyticApi.useMonthlyListingStatsQuery({ params: { year: params.year } });
 
   return (
     <Stack>
@@ -102,20 +133,121 @@ export default function DashboardPage() {
           p: 2,
         }}
       >
-        <Typography
-          sx={{ mb: 2 }}
-          className="text-white font-semibold text-2xl mb-2"
-        >
-          Recent activity
-        </Typography>{" "}
-        <UserTable />
-        <PaginationComponent
+        <Typography className="text-white font-semibold text-lg mb-2">
+          Listing Statistics
+        </Typography>
+
+        {/* <TextField  /> */}
+        <Grid2 container>
+          <Grid2 size={{ laptop: 8 }}>
+            {" "}
+            <Tabs
+              value={statsType}
+              onChange={(_, val) => {
+                const start = new Date();
+                start.setDate(start.getDate() - 300);
+                const start_date = start.toISOString().split("T")[0];
+                setStatType(val as "monthly" | "daily");
+                setParams(
+                  val === "monthly"
+                    ? { ...params, year: new Date().getFullYear() }
+                    : {
+                        start_date,
+                        end_date: new Date().toISOString().split("T")[0],
+                        year: undefined,
+                      }
+                );
+              }}
+              sx={{ mt: 2 }}
+            >
+              {["daily", "monthly"].map((t, i) => (
+                <Tab label={t} value={t} key={i} />
+              ))}
+            </Tabs>
+          </Grid2>
+          <Grid2 size={{ laptop: 2 }}>
+            {" "}
+            <DatePicker
+              label="Start Date"
+              value={params.start_date ? dayjs(params.start_date) : null}
+              onChange={(val) =>
+                setParams((prev) => ({
+                  ...prev,
+                  start_date: val ? val.format("YYYY-MM-DD") : undefined,
+                }))
+              }
+              // slots={{ textField: TextField }}
+              slotProps={{
+                openPickerButton: {
+                  color: "secondary",
+                },
+                textField: {
+                  InputLabelProps: {
+                    shrink: true,
+                  },
+
+                  fullWidth: false,
+                  size: "small",
+                  variant: "outlined",
+                },
+              }}
+            />
+          </Grid2>
+          <Grid2 size={{ laptop: 2 }}>
+            {" "}
+            <DatePicker
+              label="End Date"
+              value={params.end_date ? dayjs(params.end_date) : null}
+              onChange={(val) =>
+                setParams((prev) => ({
+                  ...prev,
+                  end_date: val ? val.format("YYYY-MM-DD") : undefined,
+                }))
+              }
+              // slots={{ textField: TextField }}
+              slotProps={{
+                openPickerButton: {
+                  color: "secondary",
+                },
+                textField: {
+                  InputLabelProps: {
+                    shrink: true,
+                  },
+                  color: "primary",
+                  inputProps: { color: "white" },
+                  fullWidth: false,
+                  size: "small",
+                  variant: "outlined",
+                },
+              }}
+            />
+          </Grid2>
+        </Grid2>
+
+        {isFetchingDailyListingData ? (
+          <Skeleton variant="rectangular" height={300} />
+        ) : (
+          <StatsLineChart
+            data={
+              statsType === "daily"
+                ? dailyListingData?.data
+                  ? getStatsArray(dailyListingData, statsType)
+                  : []
+                : monthlylistingData?.data
+                ? getStatsArray(monthlylistingData, statsType)
+                : []
+            }
+            title="listings"
+          />
+        )}
+
+        {/* <PaginationComponent
           total={total}
           rowsPerPage={rowsPerPage}
           handlePageChange={(val) => setPage(val)}
           handleRowChange={(val) => setRowsPerPage(val)}
           pageNumber={page}
-        />
+        /> */}
       </Card>
     </Stack>
   );

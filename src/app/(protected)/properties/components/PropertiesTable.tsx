@@ -84,8 +84,25 @@ export const PropertiesTable: FC<{
                   </TableCell>
                   <TableCell>
                     <Stack>
-                      <Typography variant="body1">{listing.title}</Typography>
-                      <Typography variant="caption" color="primary.lighter">
+                      <Typography
+                        variant="body1"
+                        sx={{
+                          width: "200px",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                        }}
+                      >
+                        {listing.title}
+                      </Typography>
+                      <Typography
+                        variant="caption"
+                        color="primary.lighter"
+                        sx={{
+                          width: "200px",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                        }}
+                      >
                         {listing?.description}
                       </Typography>
                     </Stack>
@@ -111,10 +128,30 @@ export const PropertiesTable: FC<{
                     </Typography>
                   </TableCell>
                   <TableCell>
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        backgroundColor: alpha(
+                          status[listing?.status || ""],
+                          0.1
+                        ),
+                        textAlign: "center",
+                        py: 1,
+                        px: 2,
+                        borderRadius: "1rem",
+                        width: "fit-content",
+                        border: `1px solid ${status[listing?.status || ""]}`,
+                      }}
+                      color={status[listing?.status || ""]}
+                    >
+                      {listing?.status || "pending"}
+                    </Typography>
+                  </TableCell>
+                  <TableCell>
                     <Stack
                       sx={{
+                        // justifyContent: "space-between",
                         display: "flex",
-                        justifyContent: "space-between",
                         alignItems: "center",
                         flexDirection: "row",
                         gap: 1,
@@ -140,26 +177,7 @@ export const PropertiesTable: FC<{
                       </Stack>
                     </Stack>
                   </TableCell>
-                  <TableCell>
-                    <Typography
-                      variant="body2"
-                      sx={{
-                        backgroundColor: alpha(
-                          status[listing?.status || ""],
-                          0.1
-                        ),
-                        textAlign: "center",
-                        py: 1,
-                        px: 2,
-                        borderRadius: "1rem",
-                        width: "fit-content",
-                        border: `1px solid ${status[listing?.status || ""]}`,
-                      }}
-                      color={status[listing?.status || ""]}
-                    >
-                      {listing?.status || "pending"}
-                    </Typography>
-                  </TableCell>
+
                   <TableCell>
                     <Typography variant="body1">
                       {dayjs(listing?.createdAt).format("DD MMM, YYYY")}

@@ -6,8 +6,10 @@ import { AuthData } from "./auth-types";
 export const authApi = realstayApi.injectEndpoints({
   overrideExisting: true,
   endpoints: (builder) => ({
-    login: builder.mutation<ApiResponse<AuthData>, ApiRequest>({
+    login: builder.mutation<any, ApiRequest>({
       query: ({ data }) => {
+
+        console.log(BASE_URL + "/auth/login", "BASE_URL")
         return {
           url: BASE_URL + "/auth/login",
           method: "POST",
