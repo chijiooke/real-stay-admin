@@ -134,7 +134,7 @@ export default function DashboardPage() {
         }}
       >
         <Typography className="text-white font-semibold text-lg mb-2">
-          Listing Statistics
+          Listing Analytics
         </Typography>
 
         {/* <TextField  /> */}

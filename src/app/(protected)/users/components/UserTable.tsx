@@ -1,6 +1,7 @@
 "use client";
 import {
   alpha,
+  Avatar,
   Stack,
   Table,
   TableBody,
@@ -8,6 +9,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  Tooltip,
   Typography,
 } from "@mui/material";
 
@@ -21,12 +23,19 @@ import { User } from "@/app/endpoints/user/user-types";
 import { FC } from "react";
 import { theme } from "@/app/lib/theme";
 import Link from "next/link";
+import dayjs from "dayjs";
 
 export const UserTable: FC<{ users: User[]; isFetching: boolean }> = ({
   users,
   isFetching,
 }) => {
-  const tableHeaders = ["Phone Number", "User", "Role", "Status"];
+  const tableHeaders = [
+    "User",
+    "Phone Number",
+    "Role",
+    "Status",
+    "Date Joined",
+  ];
 
   const status = {
     "": theme.palette.warning.light,
@@ -37,12 +46,14 @@ export const UserTable: FC<{ users: User[]; isFetching: boolean }> = ({
   return (
     <TableContainer sx={{}}>
       <Table sx={{ minWidth: 650, mb: 3 }}>
-        <TableHead>
+        <TableHead
+          sx={{ backgroundColor: "primary.dark", color: "primary.light" }}
+        >
           <TableRow>
             {tableHeaders.map((header, index) => {
               return (
                 <TableCell key={index} sx={{}}>
-                  {header}
+                  <Typography variant="body2" fontWeight={500}> {header}</Typography>
                 </TableCell>
               );
             })}
@@ -59,12 +70,56 @@ export const UserTable: FC<{ users: User[]; isFetching: boolean }> = ({
               return (
                 <TableRow
                   key={indx}
-                  sx={{ whiteSpace: "nowrap" }}
+                  sx={{}}
                   onClick={() => {
                     router.push("/users/" + u._id);
                   }}
                 >
-                  <TableCell>
+                  {" "}
+                  <TableCell align="left">
+                    <Stack
+                      alignItems={"center"}
+                      display={"flex"}
+                      direction={"row"}
+                      spacing={1}
+                    >
+                      <Avatar
+                        sx={{
+                          bgcolor: "primary.dark",
+                          width: 50,
+                          height: 50,
+                        }}
+                        variant="rounded"
+                        src={u?.image_url}
+                        alt={u?.first_name[0]}
+                      >
+                        {u?.first_name[0]}
+                      </Avatar>{" "}
+                      <Stack>
+                        <Tooltip
+                          title={u.first_name + " " + u?.last_name}
+                          arrow
+                        >
+                          <Typography
+                            variant="body2"
+                            sx={{
+                              width: "350px",
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
+                              whiteSpace: "nowrap",
+                            }}
+                          >
+                            {u.first_name + " " + u?.last_name}
+                          </Typography>
+                        </Tooltip>
+                        <Typography variant="caption" color="secondary.lighter">
+                          {u?.email}{" "}
+                          <CopyText text={u?.email || ""} fontSize={12} />
+                        </Typography>
+                      </Stack>
+                    </Stack>
+                  </TableCell>
+                  <TableCell align="left">
                     <Link
                       href={"tel:" + u?.phone_number}
                       style={{ textDecoration: "underline" }}
@@ -76,24 +131,12 @@ export const UserTable: FC<{ users: User[]; isFetching: boolean }> = ({
                       </Typography>
                     </Link>
                   </TableCell>
-                  <TableCell>
-                    <Stack>
-                      <Typography variant="body1">
-                        {u.first_name + " " + u?.last_name}
-                      </Typography>
-                      <Typography variant="caption" color="primary.lighter">
-                        {u?.email}
-                      </Typography>
-                    </Stack>
-                  </TableCell>
-                  <TableCell>
-                    <Typography variant="body1" color="primary.lighter">
-                      {u?.user_type}
-                    </Typography>
+                  <TableCell align="left">
+                    <Typography variant="body2">{u?.user_type}</Typography>
                   </TableCell>
                   <TableCell>
                     <Typography
-                      variant="body2"
+                      variant="caption"
                       sx={{
                         backgroundColor: alpha(status[u?.status || ""], 0.1),
                         textAlign: "center",
@@ -106,6 +149,11 @@ export const UserTable: FC<{ users: User[]; isFetching: boolean }> = ({
                       color={status[u?.status || ""]}
                     >
                       {u?.status || "-"}
+                    </Typography>
+                  </TableCell>
+                  <TableCell align="left">
+                    <Typography variant="body2">
+                      {dayjs(u?.createdAt).format("DD,MMM YYYY")}
                     </Typography>
                   </TableCell>
                 </TableRow>

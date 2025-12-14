@@ -154,6 +154,7 @@ export const theme = createTheme({
         },
       },
     },
+
     MuiFormLabel: {
       styleOverrides: {
         root: {
@@ -171,6 +172,7 @@ export const theme = createTheme({
         },
       },
     },
+
     MuiTextField: {
       defaultProps: {
         // InputLabelProps: { shrink: true,  },
@@ -182,16 +184,17 @@ export const theme = createTheme({
           // marginTop: "1.2rem",
 
           "& .MuiInputBase-input": {
+            top: 0,
             fontSize: ".75rem",
             color: theme.palette.secondary.main, // input text color
-            borderRadius: "10px",
+            borderRadius: "8px",
+            marginLeft: "0.5rem",
             "&::placeholder": {
               color: theme.palette.secondary.main, // placeholder color
               opacity: 1,
             },
           },
           "& .MuiOutlinedInput-root": {
-            // marginTop: "1rem",
             borderRadius: "8px",
             "&.Mui-focused .MuiInputBase-input": {
               color: theme.palette.secondary.main,
@@ -202,7 +205,7 @@ export const theme = createTheme({
               opacity: 0.5,
             },
             "& fieldset": {
-              height: "45px",
+              top: 0,
               borderColor: theme.palette.secondary.main,
               legend: {
                 display: "none",
@@ -225,6 +228,7 @@ export const theme = createTheme({
         }),
       },
     },
+
     MuiInputAdornment: {
       styleOverrides: {
         root: ({ theme }) => ({
@@ -236,6 +240,7 @@ export const theme = createTheme({
         }),
       },
     },
+
     MuiSvgIcon: {
       styleOverrides: {
         root: ({ theme }) => ({
@@ -246,7 +251,6 @@ export const theme = createTheme({
     },
 
     MuiPickersSectionList: {
-      
       styleOverrides: {
         root: ({ theme }) => ({
           fontSize: ".75rem",
@@ -282,6 +286,7 @@ export const theme = createTheme({
         }),
       },
     },
+
     MuiOutlinedInput: {
       styleOverrides: {
         root: ({ theme }) => ({
@@ -314,6 +319,7 @@ export const theme = createTheme({
         },
       },
     },
+
     MuiLoadingButton: {
       styleOverrides: {
         root: ({ theme }) => ({
@@ -324,6 +330,7 @@ export const theme = createTheme({
         }),
       },
     },
+
     MuiButton: {
       styleOverrides: {
         root: () => ({
@@ -381,6 +388,7 @@ export const theme = createTheme({
         }),
       },
     },
+
     MuiTabs: {
       styleOverrides: {
         indicator: { display: "none" },
@@ -394,6 +402,7 @@ export const theme = createTheme({
         }),
       },
     },
+
     MuiTab: {
       styleOverrides: {
         root: ({ theme }) => ({
@@ -413,6 +422,7 @@ export const theme = createTheme({
         }),
       },
     },
+
     MuiDivider: {
       styleOverrides: {
         root: ({ theme }) => ({
@@ -420,13 +430,17 @@ export const theme = createTheme({
         }),
       },
     },
+
     MuiTableHead: {
       styleOverrides: {
         root: ({ theme }) => ({
           color: theme.palette.secondary.light,
+          // fontSize: theme.typography.body1,
+          
         }),
       },
     },
+
     MuiTableCell: {
       styleOverrides: {
         root: ({ theme }) => ({
@@ -436,6 +450,7 @@ export const theme = createTheme({
         }),
       },
     },
+
     MuiTableRow: {
       styleOverrides: {
         root: ({ theme }) => ({
@@ -447,6 +462,7 @@ export const theme = createTheme({
         }),
       },
     },
+
     MuiSwitch: {
       styleOverrides: {
         root: {
@@ -487,6 +503,7 @@ export const theme = createTheme({
         },
       },
     },
+
     MuiDialog: {
       styleOverrides: {
         paper: {
@@ -495,6 +512,7 @@ export const theme = createTheme({
         },
       },
     },
+
     MuiPagination: {
       styleOverrides: {
         root: ({ theme }) => ({
@@ -502,6 +520,7 @@ export const theme = createTheme({
         }),
       },
     },
+
     MuiPaginationItem: {
       styleOverrides: {
         root: ({ theme }) => ({
@@ -509,6 +528,7 @@ export const theme = createTheme({
         }),
       },
     },
+
     MuiTablePagination: {
       styleOverrides: {
         root: ({ theme }) => ({

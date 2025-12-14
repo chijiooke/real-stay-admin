@@ -10,8 +10,10 @@ import {
   Button,
   Card,
   debounce,
+  Grid2,
   Menu,
   MenuItem,
+  Skeleton,
   Stack,
   Tab,
   Tabs,
@@ -21,6 +23,7 @@ import {
 import { Fragment, useMemo, useState } from "react";
 import { UserTable } from "./components/UserTable";
 import { Icon } from "@iconify/react/dist/iconify.js";
+import { analyticApi } from "@/app/endpoints/analytics/analytics-api-slice";
 
 export default function DashboardPage() {
   const [page, setPage] = useState(1);
@@ -79,6 +82,26 @@ export default function DashboardPage() {
     [setSearchParams] // only depend on stable setter
   );
 
+  const { data: analytics, isFetching: isFetchingAnalytics } =
+    analyticApi.useAnalyticsQuery({});
+  const userAnalytics = [
+    {
+      title: "Total users",
+      value: analytics?.data?.userStats?.total_users,
+      icon: "hugeicons:user-multiple",
+    },
+    {
+      title: "Active users",
+      value: analytics?.data?.userStats?.active_users,
+      icon: "hugeicons:user-check-02",
+    },
+    {
+      title: "Inactive users",
+      value: analytics?.data?.userStats?.inactive_users,
+      icon: "hugeicons:user-block-02",
+    },
+  ];
+
   return (
     <Stack>
       <PageHeading
@@ -86,6 +109,51 @@ export default function DashboardPage() {
         title="User"
         decription="Manage guests, hosts, and user accounts"
       />
+
+      <Grid2 container spacing={1.5} sx={{ mt: 2 }}>
+        {userAnalytics?.map((d) => (
+          <Grid2 size={{ xs: 12, md: 4 }} key={d.title}>
+            <Card
+              sx={{
+                p: 2,
+              }}
+            >
+              <Stack
+                sx={{
+                  display: "flex",
+                  flexDirection: "row",
+                  gap: 1,
+                  alignItems: "center",
+                  mb: 1.5,
+                }}
+              >
+                <Typography className="text-white w-fit" variant="body2">
+                  {isFetchingAnalytics ? <Skeleton variant="text" /> : d?.title}{" "}
+                </Typography>
+                <Icon
+                  icon={d?.icon}
+                  height="15"
+                  color={theme.palette.secondary.light}
+                />
+              </Stack>
+
+              <Typography className="text-white" variant="h4" sx={{}}>
+                {isFetchingAnalytics ? (
+                  <Skeleton
+                    variant="text"
+                    sx={{
+                      backgroundColor: "secondary.light",
+                      maxWidth: "100px",
+                    }}
+                  />
+                ) : (
+                  d?.value
+                )}
+              </Typography>
+            </Card>
+          </Grid2>
+        ))}
+      </Grid2>
       <Tabs
         value={searchParams?.user_type || ""}
         onChange={(_, val) =>
@@ -101,30 +169,31 @@ export default function DashboardPage() {
         ))}
       </Tabs>
 
-      <Stack sx={{ mt: 3 }}>
+      <Stack sx={{ mt: 6 }}>
         {" "}
         <Stack
           sx={{
             display: "flex",
             alignItems: "center",
             flexDirection: "row",
-            gap: 1,
+            justifyContent: "space-between",
           }}
         >
           <TextField
             onChange={(e) => debounceSearch(e?.target?.value)}
-            placeholder="search users.."
+            placeholder="search name, email, phone number ..."
             size="small"
             color="secondary"
             margin="none"
+            fullWidth
             sx={{
-              borderRadius: "20px",
-              height: "32px",
+              borderRadius: "60px",
               p: 0,
               m: 0,
-              width: "250px",
+              width: "40%",
             }}
             InputProps={{
+              inputProps: { borderRadius: "20px" },
               startAdornment: (
                 <Icon
                   icon="hugeicons:search-01"
@@ -143,6 +212,7 @@ export default function DashboardPage() {
             aria-expanded={open ? "true" : undefined}
             color="secondary"
             sx={{
+              // borderRadius: 0,
               "&:hover": {
                 bgcolor: theme?.palette?.secondary?.main,
                 color: theme?.palette?.secondary?.contrastText,
@@ -150,21 +220,19 @@ export default function DashboardPage() {
             }}
             size="small"
             onClick={handleClick}
-            startIcon={
-              <Icon
-                icon="hugeicons:filter"
-                width="18"
-                height="18"
-                // color={theme?.palette?.primary?.light}
-              />
-            }
-            variant="contained"
+            startIcon={<Icon icon="mi:filter" width="18" height="18" />}
+            variant="outlined"
           >
-            Status
+            filter by status
           </Button>
           <Menu
+            sx={{ width: "200px" }}
             id="filter-by-status"
             anchorEl={anchorEl}
+            anchorOrigin={{
+              vertical: "bottom", // where menu is attached relative to button
+              horizontal: "left",
+            }}
             open={open}
             onClose={() => {
               handleClickAway();
@@ -177,6 +245,7 @@ export default function DashboardPage() {
           >
             {statuses?.map((s, key) => (
               <MenuItem
+                sx={{ width: "130px" }}
                 key={key}
                 onClick={(e) => {
                   e.stopPropagation();
@@ -187,7 +256,7 @@ export default function DashboardPage() {
                   });
                 }}
               >
-                {s?.lebel}
+                <Typography variant="body2"> {s?.lebel}</Typography>
               </MenuItem>
             ))}
           </Menu>
@@ -196,24 +265,20 @@ export default function DashboardPage() {
 
       <Card
         sx={{
-          mt: 6,
-          p: 2,
+          mt: 2,
         }}
       >
-        <Typography
-          sx={{ mb: 2 }}
-          className="text-white font-semibold text-2xl mb-2"
-        >
-          Recent activity
-        </Typography>{" "}
         <UserTable isFetching={isFetching} users={data?.data?.users || []} />
-        <PaginationComponent
-          total={data?.data?.pagination?.total_items || 0}
-          rowsPerPage={rowsPerPage}
-          handlePageChange={(val) => setPage(val)}
-          handleRowChange={(val) => setRowsPerPage(val)}
-          pageNumber={page}
-        />
+        <Stack sx={{ p: 2 }}>
+          {" "}
+          <PaginationComponent
+            total={data?.data?.pagination?.total_items || 0}
+            rowsPerPage={rowsPerPage}
+            handlePageChange={(val) => setPage(val)}
+            handleRowChange={(val) => setRowsPerPage(val)}
+            pageNumber={page}
+          />
+        </Stack>
       </Card>
     </Stack>
   );

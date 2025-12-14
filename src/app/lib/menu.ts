@@ -22,6 +22,11 @@ export const menuItems: { heading: string; menus: MenuItem[] }[] = [
         path: "/properties",
       },
       {
+        label: "Bookings",
+        icon: "lucide-lab:house-roof",
+        path: "/bookings",
+      },
+      {
         label: "Notifications and Email",
         icon: "solar:notification-unread-lines-linear",
         path: "/notifications",
