@@ -1,12 +1,12 @@
 import { BASE_URL } from "@/app/configs/constant";
 import { realstayApi } from "@/app/store/storeConfigQuery";
 import { ApiRequest, ApiResponse } from "../api";
-import { Booking, BookingsResponse,  } from "./bookings-types";
+import { Booking, BookingsResponse } from "./bookings-types";
 
 export const bookingsApi = realstayApi.injectEndpoints({
   overrideExisting: true,
   endpoints: (builder) => ({
-    getBookingById: builder.query<ApiResponse<BookingsResponse>, ApiRequest>({
+    getBookingById: builder.query<ApiResponse<Booking>, ApiRequest>({
       query: ({ path }) => {
         return {
           url: BASE_URL + `/bookings/${path?.id}`,
@@ -14,7 +14,7 @@ export const bookingsApi = realstayApi.injectEndpoints({
         };
       },
     }),
-    getBookings: builder.query<ApiResponse<Booking>, ApiRequest>({
+    getBookings: builder.query<ApiResponse<BookingsResponse>, ApiRequest>({
       query: ({ params }) => {
         return {
           url: BASE_URL + `/bookings`,

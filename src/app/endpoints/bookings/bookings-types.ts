@@ -1,3 +1,4 @@
+import { Listing } from "../properties/properties-types";
 import { User } from "../user/user-types";
 
 export interface Booking {
@@ -6,7 +7,7 @@ export interface Booking {
   property_owner_id: string;
   listing_id: string;
   start_date: string; // ISO date string
-  end_date: string;   // ISO date string
+  end_date: string; // ISO date string
   status: string;
   createdAt: string; // ISO date string
   updatedAt: string; // ISO date string
@@ -14,10 +15,14 @@ export interface Booking {
   paymentRef: string;
   owner: User;
   customer: User;
+  listing: Listing;
+
+  booking_cost?: number;
+  margin?: number;
 }
 
 export interface BookingsResponse {
-  users: Booking[];
+  bookings: Booking[];
   pagination: {
     total_items: number;
     total_pages: number;
@@ -26,9 +31,7 @@ export interface BookingsResponse {
   };
 }
 
-
-export interface SingleBookingResponse {
-  data: Booking;
-  success: boolean;
-}
-
+// export interface BookingByIDResponse {
+//   data: ;
+//   success: boolean;
+// }

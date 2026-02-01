@@ -14,6 +14,14 @@ export const listingsApi = realstayApi.injectEndpoints({
         };
       },
     }),
+    manageListing: builder.mutation<ApiResponse<ListingsResponse>, ApiRequest>({
+      query: ({ path }) => {
+        return {
+          url: BASE_URL + `/listing/review/${path?.id}/${path?.action}`,
+          method: "PATCH",
+        };
+      },
+    }),
     getListings: builder.query<ApiResponse<ListingsResponse>, ApiRequest>({
       query: ({ params }) => {
         return {

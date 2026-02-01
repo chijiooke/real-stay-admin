@@ -187,11 +187,16 @@ export const theme = createTheme({
             top: 0,
             fontSize: ".75rem",
             color: theme.palette.secondary.main, // input text color
+            // WebkitTextFillColor: theme.palette.secondary.main,
             borderRadius: "8px",
             marginLeft: "0.5rem",
             "&::placeholder": {
               color: theme.palette.secondary.main, // placeholder color
+              // WebkitTextFillColor: theme.palette.secondary.main,
               opacity: 1,
+            },
+            "&.Mui-disabled": {
+              color: theme.palette.secondary.main,
             },
           },
           "& .MuiOutlinedInput-root": {
@@ -202,7 +207,7 @@ export const theme = createTheme({
 
             "&.Mui-disabled .MuiInputBase-input": {
               color: theme.palette.secondary.main,
-              opacity: 0.5,
+              opacity: 0.7,
             },
             "& fieldset": {
               top: 0,
@@ -217,11 +222,22 @@ export const theme = createTheme({
             "&.Mui-focused fieldset": {
               borderColor: theme.palette.secondary.main,
             },
+            "&.Mui-disabled fieldset": {
+              borderColor: theme.palette.secondary.main,
+              opacity: 0.5,
+              color: theme.palette.secondary.main,
+              "&:hover": {
+                cursor: "not-allowed",
+              },
+            },
           },
           "& .MuiInputLabel-root": {
             transform: "translate(0px, -28px) scale(0.9)", // optional: reposition label
             color: theme.palette.secondary.main,
             "&.Mui-focused": {
+              color: theme.palette.secondary.main,
+            },
+            "&.Mui-disabled": {
               color: theme.palette.secondary.main,
             },
           },
@@ -293,8 +309,25 @@ export const theme = createTheme({
           borderRadius: "8px",
           alignItems: "center",
           borderColor: theme.palette.secondary.main,
-
+          input: {
+            "&.Mui-disabled": {
+              // backgroundColor: '#f0f0f0',
+              WebkitTextFillColor: theme.palette.secondary.main,
+              color: theme.palette.secondary.main,
+            },
+          },
+          notchedOutline: {
+            "&.Mui-disabled": {
+              borderColor: theme.palette.secondary.main,
+            },
+          },
+          root: {
+            "&.Mui-disabled:hover": {
+              cursor: "not-allowed", // hover cursor
+            },
+          },
           "& fieldset": {
+            color: theme.palette.secondary.main,
             borderColor: theme.palette.secondary.main,
             legend: { display: "none" },
           },
@@ -305,6 +338,11 @@ export const theme = createTheme({
 
           "&.Mui-focused fieldset": {
             borderColor: theme.palette.secondary.main,
+          },
+
+          "&.Mui-disabled fieldset": {
+            color: theme.palette.secondary.contrastText,
+            // opacity: 0.5,
           },
         }),
       },
@@ -436,7 +474,6 @@ export const theme = createTheme({
         root: ({ theme }) => ({
           color: theme.palette.secondary.light,
           // fontSize: theme.typography.body1,
-          
         }),
       },
     },
@@ -556,7 +593,7 @@ export const theme = createTheme({
         paper: ({ theme }) => ({
           borderRadius: "8px",
           boxShadow: "0 4px 6px rgba(0,0,0,0.05)",
-          padding: "4px 0",
+          // padding: "4px 0",
           backgroundColor: theme.palette.secondary.main,
           // mt: 4,
         }),

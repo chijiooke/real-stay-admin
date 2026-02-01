@@ -23,5 +23,13 @@ export const userApi = realstayApi.injectEndpoints({
         };
       },
     }),
+    manageUsers: builder.mutation<ApiResponse<UsersResponse>, ApiRequest>({
+      query: ({ path }) => {
+        return {
+          url: BASE_URL + `/users/${path?.id}/${path?.action}`,
+          method: "PATCH",
+        };
+      },
+    }),
   }),
 });

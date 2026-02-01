@@ -124,7 +124,9 @@ export const PropertiesTable: FC<{
                   </TableCell>
                   <TableCell>
                     <Typography variant="body1">
-                      {listing?.extra_offerings?.join(", ")}
+                      {!listing?.extra_offerings?.length
+                        ? "none"
+                        : listing?.extra_offerings?.join(", ")}
                     </Typography>
                   </TableCell>
                   <TableCell>

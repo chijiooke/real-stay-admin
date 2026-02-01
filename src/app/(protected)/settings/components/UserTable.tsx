@@ -1,9 +1,7 @@
 "use client";
 import {
+  alpha,
   Avatar,
-  IconButton,
-  Menu,
-  MenuItem,
   Stack,
   Table,
   TableBody,
@@ -21,30 +19,23 @@ import { CopyText } from "@/app/components/copyText";
 import { EmptyTableRows } from "@/app/components/table-utilities/EmptyTable";
 import { TableRowSkeletonLoader } from "@/app/components/table-utilities/TableRowSkeletonLoader";
 
-import { StatusBadge } from "@/app/components/table-utilities/TableStatusPill";
 import { User } from "@/app/endpoints/user/user-types";
+import { FC } from "react";
 import { theme } from "@/app/lib/theme";
-import { Icon } from "@iconify/react/dist/iconify.js";
-import { LoadingButton } from "@mui/lab";
-import dayjs from "dayjs";
 import Link from "next/link";
-import { FC, useState } from "react";
-import { BookingStatusEnum } from "../../bookings/interfaces/bookings.enum";
-import { UserActionEnum, UserStatusEnum } from "../interfaces/users.types";
-import { capitalizeFirstLetter } from "@/app/utils/string-helper";
+import dayjs from "dayjs";
+import { StatusBadge } from "@/app/components/table-utilities/TableStatusPill";
 
-export const UserTable: FC<{
-  users: User[];
-  isFetching: boolean;
-  manageUser: ({ action, id }: { action: string; id: string }) => Promise<void>;
-}> = ({ users, isFetching, manageUser }) => {
+export const UserTable: FC<{ users: User[]; isFetching: boolean }> = ({
+  users,
+  isFetching,
+}) => {
   const tableHeaders = [
     "User",
     "Phone Number",
     "Role",
     "Status",
     "Date Joined",
-    "",
   ];
 
   const statusOptions = {
@@ -52,18 +43,6 @@ export const UserTable: FC<{
     active: theme.palette.success.light,
   };
   const router = useRouter();
-
-  const [selected, setselected] = useState<null | number>(null);
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
-  const handleClickAway = () => {
-    setAnchorEl(null);
-  };
-  const handleClick = (event: React.MouseEvent<HTMLElement>, index: number) => {
-    event.stopPropagation();
-    setAnchorEl(anchorEl ? null : event.currentTarget);
-    setselected(index);
-  };
 
   return (
     <TableContainer sx={{}}>
@@ -169,92 +148,6 @@ export const UserTable: FC<{
                     <Typography variant="body2">
                       {dayjs(u?.createdAt).format("DD,MMM YYYY")}
                     </Typography>
-                  </TableCell>
-                  <TableCell
-                    align="left"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                    }}
-                  >
-                    <Tooltip title="more actions" arrow>
-                      <IconButton
-                        onClick={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          handleClick(e, indx);
-                        }}
-                      >
-                        <Icon
-                          icon="lsicon:more-filled"
-                          fontSize={20}
-                          color={theme.palette.secondary.light}
-                        />
-                      </IconButton>
-                    </Tooltip>
-                    <Menu
-                      id="actions"
-                      anchorEl={anchorEl}
-                      anchorOrigin={{
-                        vertical: "bottom",
-                        horizontal: "left",
-                      }}
-                      open={open && indx === selected}
-                      onClose={() => {
-                        handleClickAway();
-                      }}
-                      slotProps={{
-                        list: {
-                          "aria-labelledby": "actions-btn",
-                        },
-                      }}
-                    >
-                      <MenuItem
-                        key={indx}
-                        onClick={(e) => {
-                          manageUser({
-                            action:
-                              u.status === UserStatusEnum.ACTIVE
-                                ? UserActionEnum.DEACTIVATE
-                                : UserActionEnum.ACTIVATE,
-                            id: u._id || u.id,
-                          });
-                          e.stopPropagation();
-                          handleClickAway();
-                        }}
-                      >
-                        <LoadingButton
-                          size="small"
-                          color={
-                            u.status === UserStatusEnum.ACTIVE
-                              ? "error"
-                              : "success"
-                          }
-                        >
-                          {capitalizeFirstLetter(
-                            u.status === UserStatusEnum.ACTIVE
-                              ? UserActionEnum.DEACTIVATE
-                              : UserActionEnum.ACTIVATE
-                          )}
-                        </LoadingButton>
-                      </MenuItem>
-                      <MenuItem
-                        key={indx}
-                        onClick={(e) => {
-                          manageUser({
-                            action:
-                              u.status === UserStatusEnum.ACTIVE
-                                ? UserActionEnum.DEACTIVATE
-                                : UserActionEnum.ACTIVATE,
-                            id: u._id || u.id,
-                          });
-                          e.stopPropagation();
-                          handleClickAway();
-                        }}
-                      >
-                        <LoadingButton size="small">View Details</LoadingButton>
-                      </MenuItem>
-                    </Menu>
                   </TableCell>
                 </TableRow>
               );

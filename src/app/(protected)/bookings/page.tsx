@@ -10,8 +10,10 @@ import {
   Button,
   Card,
   debounce,
+  Grid2,
   Menu,
   MenuItem,
+  Skeleton,
   Stack,
   Tab,
   Tabs,
@@ -19,7 +21,15 @@ import {
   Typography,
 } from "@mui/material";
 import { useMemo, useState } from "react";
-import { UserTable } from "./components/UserTable";
+import { BookingsTable } from "./components/BookingsTable";
+import { BookingStatusEnum } from "./interfaces/bookings.enum";
+import {
+  capitalizeFirstLetter,
+  enumToSelectOptions,
+} from "@/app/utils/string-helper";
+import { bookingsApi } from "@/app/endpoints/bookings/bookings-api-slice";
+import { analyticApi } from "@/app/endpoints/analytics/analytics-api-slice";
+import { formatToNaira } from "@/app/utils/globals";
 
 export default function DashboardPage() {
   const [page, setPage] = useState(1);
@@ -35,26 +45,35 @@ export default function DashboardPage() {
     search: undefined,
   });
 
-  const userTypes = [
-    { lebel: "All", value: "" },
-    { lebel: "Guests", value: "guest" },
-    { lebel: "Users", value: "host" },
-  ];
+  const statuses = enumToSelectOptions(BookingStatusEnum);
 
-  const statuses = [
-    { lebel: "All", value: "" },
-    { lebel: "Pending", value: "pending" },
-    { lebel: "Active", value: "active" },
-    { lebel: "Inactive", value: "inactive" },
-  ];
-
-  const { data, isFetching } = userApi.useGetUsersQuery({
+  const { data, isFetching } = bookingsApi.useGetBookingsQuery({
     params: {
       ...searchParams,
       page,
       page_size: rowsPerPage,
     },
   });
+
+    const { data: analytics, isFetching: isFetchingAnalytics } =
+      analyticApi.useBookingsAnalyticsQuery({});
+    const transactionAnalytics = [
+      {
+        title: "Total Booking Count",
+        value: analytics?.data?.booking_stats?.total_booking_count ||0 ,
+        icon: "mdi:counting-5",
+      },
+      {
+        title: "Total GTV",
+        value: formatToNaira(analytics?.data?.booking_stats?.total_gtv||0) ,
+        icon: "tabler:currency-naira",
+      },
+      {
+        title: "Total Margin",
+        value: formatToNaira(analytics?.data?.booking_stats?.total_margin||0),
+        icon: "tabler:currency-naira",
+      },
+    ];
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -82,48 +101,78 @@ export default function DashboardPage() {
     <Stack>
       <PageHeading
         showBackButton={false}
-        title="User"
-        decription="Manage guests, hosts, and user accounts"
+        title="Bookings"
+        decription="Manage bookings and reservations"
       />
-      <Tabs
-        value={searchParams?.user_type || ""}
-        onChange={(_, val) =>
-          setSearchParams({
-            ...searchParams,
-            user_type: sanitizeFilterQuery(val),
-          })
-        }
-        sx={{ mt: 2 }}
-      >
-        {userTypes.map((t, i) => (
-          <Tab label={t.lebel} value={t.value} key={i} />
-        ))}
-      </Tabs>
+<Grid2 container spacing={1.5} sx={{ mt: 2 }}>
+        {transactionAnalytics?.map((d) => (
+          <Grid2 size={{ xs: 12, md: 4 }} key={d.title}>
+            <Card
+              sx={{
+                p: 2,
+              }}
+            >
+              <Stack
+                sx={{
+                  display: "flex",
+                  flexDirection: "row",
+                  gap: 1,
+                  alignItems: "center",
+                  mb: 1.5,
+                }}
+              >
+                <Typography className="text-white w-fit" variant="body2">
+                  {isFetchingAnalytics ? <Skeleton variant="text" /> : d?.title}{" "}
+                </Typography>
+                <Icon
+                  icon={d?.icon}
+                  height="15"
+                  color={theme.palette.secondary.light}
+                />
+              </Stack>
 
-      <Stack sx={{ mt: 3 }}>
+              <Typography className="text-white" variant="h4" sx={{}}>
+                {isFetchingAnalytics ? (
+                  <Skeleton
+                    variant="text"
+                    sx={{
+                      backgroundColor: "secondary.light",
+                      maxWidth: "100px",
+                    }}
+                  />
+                ) : (
+                  d?.value
+                )}
+              </Typography>
+            </Card>
+          </Grid2>
+        ))}
+      </Grid2>
+      <Stack sx={{ mt: 6 }}>
         {" "}
         <Stack
           sx={{
             display: "flex",
             alignItems: "center",
             flexDirection: "row",
-            gap: 1,
+            justifyContent: "space-between",
           }}
         >
           <TextField
             onChange={(e) => debounceSearch(e?.target?.value)}
-            placeholder="search users.."
+            placeholder="search name, email, phone number ..."
             size="small"
             color="secondary"
             margin="none"
+            fullWidth
             sx={{
-              borderRadius: "20px",
-              height: "32px",
+              borderRadius: "60px",
               p: 0,
               m: 0,
-              width: "250px",
+              width: "40%",
             }}
             InputProps={{
+              inputProps: { borderRadius: "20px" },
               startAdornment: (
                 <Icon
                   icon="hugeicons:search-01"
@@ -142,6 +191,7 @@ export default function DashboardPage() {
             aria-expanded={open ? "true" : undefined}
             color="secondary"
             sx={{
+              // borderRadius: 0,
               "&:hover": {
                 bgcolor: theme?.palette?.secondary?.main,
                 color: theme?.palette?.secondary?.contrastText,
@@ -149,21 +199,19 @@ export default function DashboardPage() {
             }}
             size="small"
             onClick={handleClick}
-            startIcon={
-              <Icon
-                icon="hugeicons:filter"
-                width="18"
-                height="18"
-                // color={theme?.palette?.primary?.light}
-              />
-            }
-            variant="contained"
+            startIcon={<Icon icon="mi:filter" width="18" height="18" />}
+            variant="outlined"
           >
-            Status
+            filter by status
           </Button>
           <Menu
+            sx={{ width: "200px" }}
             id="filter-by-status"
             anchorEl={anchorEl}
+            anchorOrigin={{
+              vertical: "bottom", // where menu is attached relative to button
+              horizontal: "left",
+            }}
             open={open}
             onClose={() => {
               handleClickAway();
@@ -176,6 +224,7 @@ export default function DashboardPage() {
           >
             {statuses?.map((s, key) => (
               <MenuItem
+                sx={{ width: "130px" }}
                 key={key}
                 onClick={(e) => {
                   e.stopPropagation();
@@ -186,7 +235,7 @@ export default function DashboardPage() {
                   });
                 }}
               >
-                {s?.lebel}
+                <Typography variant="body2"> {s?.label}</Typography>
               </MenuItem>
             ))}
           </Menu>
@@ -203,9 +252,9 @@ export default function DashboardPage() {
           sx={{ mb: 2 }}
           className="text-white font-semibold text-2xl mb-2"
         >
-          Recent activity
+          Bookings
         </Typography>{" "}
-        <UserTable isFetching={isFetching} users={data?.data?.users || []} />
+        <BookingsTable isFetching={isFetching} bookings={data?.data?.bookings || []} />
         <PaginationComponent
           total={data?.data?.pagination?.total_items || 0}
           rowsPerPage={rowsPerPage}

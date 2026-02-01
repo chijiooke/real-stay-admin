@@ -8,10 +8,18 @@ export const authApi = realstayApi.injectEndpoints({
   endpoints: (builder) => ({
     login: builder.mutation<any, ApiRequest>({
       query: ({ data }) => {
-
-        console.log(BASE_URL + "/auth/login", "BASE_URL")
+        console.log(BASE_URL + "/auth/login", "BASE_URL");
         return {
           url: BASE_URL + "/auth/login",
+          method: "POST",
+          data: data,
+        };
+      },
+    }),
+    acceptInvite: builder.mutation<any, ApiRequest>({
+      query: ({ data }) => {
+        return {
+          url: BASE_URL + "/auth/accept-invite",
           method: "POST",
           data: data,
         };

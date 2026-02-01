@@ -24,8 +24,6 @@ import { Fragment, useMemo, useState } from "react";
 import { UserTable } from "./components/UserTable";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { analyticApi } from "@/app/endpoints/analytics/analytics-api-slice";
-import { toast } from "react-toastify";
-import { GetErrorMessage } from "@/app/utils/error-handler";
 
 export default function DashboardPage() {
   const [page, setPage] = useState(1);
@@ -41,10 +39,10 @@ export default function DashboardPage() {
     search: undefined,
   });
 
-  const userTypes = [
-    { lebel: "All", value: "" },
-    { lebel: "Guests", value: "guest" },
-    { lebel: "Hosts", value: "host" },
+  const tabs = [
+    { lebel: "Users", value: "users" },
+    { lebel: "Roles & Permissions", value: "roles" },
+    // { lebel: "Cofigura", value: "roles" },
   ];
 
   const statuses = [
@@ -54,27 +52,14 @@ export default function DashboardPage() {
     { lebel: "Inactive", value: "inactive" },
   ];
 
-  const { data, isFetching, refetch } = userApi.useGetUsersQuery({
+  const { data, isFetching } = userApi.useGetUsersQuery({
     params: {
       ...searchParams,
+      user_type: "admin",
       page,
       page_size: rowsPerPage,
     },
   });
-
-  const [manageUserMutation, { isLoading }] = userApi.useManageUsersMutation();
-
-  const manageUser = async ({ action, id }: { action: string; id: string }) => {
-    await manageUserMutation({ path: { id, action } })
-      .unwrap()
-      .then(() => {
-        toast.success(`user has been ${action}d`);
-        refetch();
-      })
-      .catch((err) => {
-        toast.error(GetErrorMessage(err));
-      });
-  };
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -99,7 +84,7 @@ export default function DashboardPage() {
   );
 
   const { data: analytics, isFetching: isFetchingAnalytics } =
-    analyticApi.useAnalyticsQuery({});
+    analyticApi.useAnalyticsQuery({ params: { user_type: "admin" } });
   const userAnalytics = [
     {
       title: "Total users",
@@ -122,8 +107,8 @@ export default function DashboardPage() {
     <Stack>
       <PageHeading
         showBackButton={false}
-        title="User"
-        decription="Manage guests, hosts, and user accounts"
+        title="Settings"
+        decription="Manage admin users, roles and permissions"
       />
 
       <Grid2 container spacing={1.5} sx={{ mt: 2 }}>
@@ -180,7 +165,7 @@ export default function DashboardPage() {
         }
         sx={{ mt: 2 }}
       >
-        {userTypes.map((t, i) => (
+        {tabs.map((t, i) => (
           <Tab label={t.lebel} value={t.value} key={i} />
         ))}
       </Tabs>
@@ -284,12 +269,9 @@ export default function DashboardPage() {
           mt: 2,
         }}
       >
-        <UserTable
-          isFetching={isFetching || isLoading}
-          users={data?.data?.users || []}
-          manageUser={manageUser}
-        />
+        <UserTable isFetching={isFetching} users={data?.data?.users || []} />
         <Stack sx={{ p: 2 }}>
+          {" "}
           <PaginationComponent
             total={data?.data?.pagination?.total_items || 0}
             rowsPerPage={rowsPerPage}

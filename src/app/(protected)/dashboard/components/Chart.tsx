@@ -12,6 +12,7 @@ import {
 } from "chart.js";
 import { Line } from "react-chartjs-2";
 import { StatsItem } from "@/app/endpoints/analytics/analytics-types";
+import { Skeleton } from "@mui/material";
 
 // Register chart components
 ChartJS.register(
@@ -28,12 +29,14 @@ interface StatsChartProps {
   data: StatsItem[];
   title?: string;
   color?: string; // optional line color
+  loading?: boolean;
 }
 
 const StatsLineChart: React.FC<StatsChartProps> = ({
   data,
   title = "Stats Chart",
   color = "rgba(102, 204, 204, 1)",
+  loading = false,
 }) => {
   const chartData = {
     labels: data.map((item) => item.key),
@@ -65,7 +68,7 @@ const StatsLineChart: React.FC<StatsChartProps> = ({
         fill: true,
         pointRadius: 2,
         pointHoverRadius: 7,
-        pointBackgroundColor: '#66CCCC', // optional, match gradient
+        pointBackgroundColor: "#66CCCC", // optional, match gradient
       },
     ],
   };
@@ -88,7 +91,11 @@ const StatsLineChart: React.FC<StatsChartProps> = ({
     },
   };
 
-  return <Line data={chartData} options={options} />;
+  return loading ? (
+    <Skeleton height={400} width={"100%"} />
+  ) : (
+    <Line data={chartData} options={options} />
+  );
 };
 
 export default StatsLineChart;

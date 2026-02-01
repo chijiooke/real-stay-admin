@@ -16,12 +16,24 @@ import {
 } from "@mui/material";
 import React, { FC } from "react";
 import { useRouter } from "next/navigation";
+import { NoData } from "@/app/components/table-utilities/EmptyTable";
+import {
+  UserActionEnum,
+  UserStatusEnum,
+} from "../../users/interfaces/users.types";
+import { capitalizeFirstLetter } from "@/app/utils/string-helper";
 
 const PropertiesGrid: FC<{
   listings: Listing[];
   isFetching: boolean;
-}> = ({ listings, isFetching }) => {
+  manage: ({ action, id }: { action: string; id: string }) => Promise<void>;
+}> = ({ listings, isFetching, manage }) => {
   const router = useRouter();
+
+  if (!listings.length && !isFetching) {
+    return <NoData text="no properties to display" color="secondary.light" />;
+  }
+
   return (
     <div>
       <Grid2 container spacing={2} sx={{ my: 2 }}>
@@ -180,11 +192,31 @@ const PropertiesGrid: FC<{
                     <Stack
                       sx={{ display: "flex", flexDirection: "row", gap: 1 }}
                     >
-                      {/* <Button color="secondary" variant="text" size="small">
-                    View more
-                  </Button> */}
-                      <Button variant="contained" size="small" color="error">
-                        Flag
+                      <Button
+                        variant="contained"
+                        size="small"
+                        color={
+                          listing?.status === UserStatusEnum.ACTIVE
+                            ? "error"
+                            : "success"
+                        }
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          e.preventDefault();
+                          manage({
+                            action:
+                              listing?.status === UserStatusEnum.ACTIVE
+                                ? UserActionEnum.DEACTIVATE
+                                : UserActionEnum.ACTIVATE,
+                            id: listing?._id!,
+                          });
+                        }}
+                      >
+                        {capitalizeFirstLetter(
+                          listing?.status === UserStatusEnum.ACTIVE
+                            ? UserActionEnum.DEACTIVATE
+                            : UserActionEnum.ACTIVATE
+                        )}
                       </Button>
                     </Stack>
                   </CardActions>

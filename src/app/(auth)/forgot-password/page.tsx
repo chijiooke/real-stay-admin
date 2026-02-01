@@ -1,5 +1,6 @@
 "use client";
 
+import NonprotectedFooter from "@/app/components/nonprotectedFooter";
 import { Icon } from "@iconify/react";
 import { LoadingButton } from "@mui/lab";
 import { TextField, Typography } from "@mui/material";
@@ -64,11 +65,7 @@ export default function SignInPage() {
         </Card>
       </form>
 
-      <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2">
-        <Typography variant="body2" color="#FFFFFFB2" align="center">
-          © {new Date().getFullYear()} Real Stay Admin
-        </Typography>
-      </div>
+      <NonprotectedFooter />
     </div>
   );
 }

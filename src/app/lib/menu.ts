@@ -36,22 +36,27 @@ export const menuItems: { heading: string; menus: MenuItem[] }[] = [
         icon: "mage:dashboard-bar-notification",
         path: "/reports",
       },
-      {
-        label: "Settings",
-        icon: "hugeicons:settings-03",
-        path: "/settings",
-      },
     ],
   },
   {
     heading: "Admin Utility",
     menus: [
+      {
+        label: "App configs",
+        icon: "hugeicons:settings-03",
+        path: "/audit-log",
+      },
       { label: "Audit logs", icon: "hugeicons:task-01", path: "/audit-log" },
       {
-        label: "Roles and Permissions",
-        icon: "solar:shield-user-linear",
-        path: "/roles-and-permissions",
+        label: "Admin Management",
+        icon: "hugeicons:settings-03",
+        path: "/settings",
       },
+      // {
+      //   label: "Roles and Permissions",
+      //   icon: "solar:shield-user-linear",
+      //   path: "/roles-and-permissions",
+      // },
     ],
   },
 ];
@@ -64,7 +69,7 @@ export const userItems: MenuItem[] = [
   {
     label: "Log out",
     icon: "akar-icons:door",
-    color:"error.light",
+    color: "error.light",
     func: () => {
       if (typeof window !== "undefined") {
         localStorage.removeItem("user_id");

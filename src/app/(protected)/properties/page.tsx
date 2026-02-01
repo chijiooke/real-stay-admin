@@ -25,6 +25,10 @@ import {
 import { Fragment, useMemo, useState } from "react";
 import PropertiesGrid from "./components/PropertiesGrid";
 import { PropertiesTable } from "./components/PropertiesTable";
+import { FilterDrawer } from "./components/Filter";
+import { toast } from "react-toastify";
+import { GetErrorMessage } from "@/app/utils/error-handler";
+import { UserStatusEnum } from "../users/interfaces/users.types";
 
 export default function DashboardPage() {
   const { data: analytics, isFetching: isFetchingListings } =
@@ -50,14 +54,30 @@ export default function DashboardPage() {
   const [page, setPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
-  const [searchParams, setSearchParams] = useState<{
-    user_type: undefined | string;
-    status: undefined | string;
-    search: undefined | string;
-  }>({
+  // interface UserFilter {
+  //   user_type?: string;
+  //   status?: string;
+  //   search?: string;
+  // }
+  type FilterValue = string | undefined;
+
+  type UserFilter = Record<
+    | "user_type"
+    | "status"
+    | "search"
+    | "are_pets_allowed"
+    | "type"
+    | "start_date",
+    FilterValue
+  >;
+
+  const [searchParams, setSearchParams] = useState<UserFilter>({
     user_type: undefined,
     status: undefined,
     search: undefined,
+    are_pets_allowed: undefined,
+    type: undefined,
+    start_date: undefined,
   });
 
   const userTypes = [
@@ -71,17 +91,29 @@ export default function DashboardPage() {
     { icon: "foundation:list", value: "list" },
   ];
 
-  const [activeView, setActiveView] = useState("list");
+  const [activeView, setActiveView] = useState("grid");
 
   const statuses = [
+    { lebel: "All", value: undefined },
     { lebel: "Pending", value: "" },
     { lebel: "Active", value: "active" },
     { lebel: "Inactive", value: "inactive" },
   ];
 
-  const { data, isFetching } = listingsApi.useGetListingsQuery({
+  const [filteropen, setfilteropen] = useState(false);
+  const [filter, setFilter] = useState<UserFilter>({
+    // user_type: undefined,
+    status: undefined,
+    search: undefined,
+    are_pets_allowed: undefined,
+    type: undefined,
+    user_type: undefined,
+    start_date: undefined,
+  });
+
+  const { data, isFetching, refetch } = listingsApi.useGetListingsQuery({
     params: {
-      ...searchParams,
+      ...filter,
       page,
       page_size: rowsPerPage,
     },
@@ -100,7 +132,7 @@ export default function DashboardPage() {
   const debounceSearch = useMemo(
     () =>
       debounce((val: string) => {
-        setSearchParams((prev) => ({
+        setFilter((prev) => ({
           ...prev,
           search: sanitizeFilterQuery(val),
         }));
@@ -108,6 +140,20 @@ export default function DashboardPage() {
       }, 1000),
     [setSearchParams]
   );
+
+  const [manageListing, { isLoading }] = listingsApi.useManageListingMutation();
+
+  const manage = async ({ action, id }: { action: string; id: string }) => {
+    await manageListing({ path: { id, action } })
+      .unwrap()
+      .then(() => {
+        toast.success(`listing has been ${action}d`);
+        refetch();
+      })
+      .catch((err) => {
+        toast.error(GetErrorMessage(err));
+      });
+  };
 
   return (
     <Stack>
@@ -211,11 +257,21 @@ export default function DashboardPage() {
             }}
           />
 
-          <Badge badgeContent={4} color="warning">
+          <Badge
+            badgeContent={
+              Object.values(filter).filter(
+                (value) =>
+                  value !== undefined &&
+                  value !== null &&
+                  !(typeof value === "string" && value.trim() === "")
+              ).length
+            }
+            color="warning"
+          >
             <Button
               color="secondary"
               variant="contained"
-              onClick={handleClick}
+              onClick={() => setfilteropen(true)}
               size="large"
               endIcon={
                 <Icon icon="fluent:filter-24-regular" width="18" height="18" />
@@ -223,6 +279,34 @@ export default function DashboardPage() {
             >
               Filter
             </Button>
+
+            <FilterDrawer<UserFilter>
+              open={filteropen}
+              onClose={() => setfilteropen(false)}
+              filter={filter}
+              onChange={setFilter}
+              title="Property Filters"
+              fields={[
+                {
+                  key: "status",
+                  label: "Status",
+                  type: "list",
+                  options: [
+                    { label: "Active", value: UserStatusEnum.ACTIVE },
+                    { label: "Inactive", value: UserStatusEnum.INACTIVE },
+                  ],
+                },
+                // {
+                //   key: "start_date",
+                //   label: "Start Data",
+                //   type: "date",
+                //   // options: [
+                //   //   { label: "Active", value: "ACTIVE" },
+                //   //   { label: "Inactive", value: "INACTIVE" },
+                //   // ],
+                // },
+              ]}
+            />
           </Badge>
         </Stack>
       </Stack>
@@ -236,7 +320,6 @@ export default function DashboardPage() {
           {view.map((v, i) => (
             <Tab
               sx={{
-                // p: 0,
                 maxWidth: "20px",
                 "$ .MuiTab-icon": { maxWidth: "20px" },
               }}
@@ -248,12 +331,13 @@ export default function DashboardPage() {
         </Tabs>
         {activeView == "grid" ? (
           <PropertiesGrid
-            isFetching={isFetchingListings}
+            isFetching={isFetchingListings || isFetching || isLoading}
             listings={data?.data?.listings || []}
+            manage={manage}
           />
         ) : (
           <PropertiesTable
-            isFetching={isFetchingListings}
+            isFetching={isFetchingListings || isFetching}
             listings={data?.data?.listings || []}
           />
         )}

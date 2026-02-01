@@ -21,6 +21,8 @@ import StatsLineChart from "./components/Chart";
 import { getStatsArray } from "@/app/utils/chart-helper";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
+import { formatToNaira } from "@/app/utils/globals";
+import { YearPicker } from "@mui/lab";
 
 export default function DashboardPage() {
   const { data: analytics, isFetching } = analyticApi.useAnalyticsQuery({});
@@ -57,13 +59,33 @@ export default function DashboardPage() {
     },
   ];
 
-  const [total, setTotal] = useState(0);
-  const [page, setPage] = useState(1);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const { data: bookingAnalytics, isFetching: isFetchingAnalytics } =
+    analyticApi.useBookingsAnalyticsQuery({});
+  const transactionAnalytics = [
+    {
+      title: "Total Booking Count",
+      value: bookingAnalytics?.data?.booking_stats?.total_booking_count || 0,
+      icon: "mdi:counting-5",
+    },
+    {
+      title: "Total GTV (gross)",
+      value: formatToNaira(
+        bookingAnalytics?.data?.booking_stats?.total_gtv || 0
+      ),
+      icon: "tabler:currency-naira",
+    },
+    {
+      title: "Total Margin (profit)",
+      value: formatToNaira(
+        bookingAnalytics?.data?.booking_stats?.total_margin || 0
+      ),
+      icon: "tabler:currency-naira",
+    },
+  ];
 
   const [statsType, setStatType] = useState<"monthly" | "daily">("daily");
   const [params, setParams] = useState<{
-    year: undefined | number;
+    year: undefined | string;
     start_date: undefined | string;
     end_date: undefined | string;
   }>({
@@ -73,10 +95,31 @@ export default function DashboardPage() {
   });
 
   const { data: dailyListingData, isFetching: isFetchingDailyListingData } =
-    analyticApi.useDailyListingStatsQuery({ params });
+    analyticApi.useDailyListingStatsQuery(
+      { params },
+      { skip: statsType !== "daily" }
+    );
 
   const { data: monthlylistingData, isFetching: isFetchingMonthlyListingData } =
-    analyticApi.useMonthlyListingStatsQuery({ params: { year: params.year } });
+    analyticApi.useMonthlyListingStatsQuery(
+      { params: { year: dayjs(params.year).year() } },
+      { skip: statsType !== "monthly" }
+    );
+
+  const yearPickerSlotProps = {
+    openPickerButton: {
+      color: "secondary",
+    },
+    textField: {
+      InputLabelProps: {
+        shrink: true,
+      },
+      color: "primary",
+      fullWidth: true,
+      size: "small",
+      variant: "outlined",
+    },
+  };
 
   return (
     <Stack>
@@ -126,6 +169,48 @@ export default function DashboardPage() {
             </Card>
           </Grid2>
         ))}
+        {transactionAnalytics?.map((d) => (
+          <Grid2 size={{ xs: 12, md: 4 }} key={d.title}>
+            <Card
+              sx={{
+                p: 2,
+              }}
+            >
+              <Stack
+                sx={{
+                  display: "flex",
+                  flexDirection: "row",
+                  gap: 1,
+                  alignItems: "center",
+                  mb: 1.5,
+                }}
+              >
+                <Typography className="text-white w-fit" variant="body2">
+                  {isFetchingAnalytics ? <Skeleton variant="text" /> : d?.title}{" "}
+                </Typography>
+                <Icon
+                  icon={d?.icon}
+                  height="15"
+                  color={theme.palette.secondary.light}
+                />
+              </Stack>
+
+              <Typography className="text-white" variant="h4" sx={{}}>
+                {isFetchingAnalytics ? (
+                  <Skeleton
+                    variant="text"
+                    sx={{
+                      backgroundColor: "secondary.light",
+                      maxWidth: "100px",
+                    }}
+                  />
+                ) : (
+                  d?.value
+                )}
+              </Typography>
+            </Card>
+          </Grid2>
+        ))}
       </Grid2>
       <Card
         sx={{
@@ -139,7 +224,7 @@ export default function DashboardPage() {
 
         {/* <TextField  /> */}
         <Grid2 container>
-          <Grid2 size={{ laptop: 8 }}>
+          <Grid2 size={{ laptop: statsType === "monthly" ? 10 : 8 }}>
             {" "}
             <Tabs
               value={statsType}
@@ -150,7 +235,12 @@ export default function DashboardPage() {
                 setStatType(val as "monthly" | "daily");
                 setParams(
                   val === "monthly"
-                    ? { ...params, year: new Date().getFullYear() }
+                    ? {
+                        ...params,
+                        year: new Date().toISOString().split("T")[0],
+                        start_date: undefined,
+                        end_date: undefined,
+                      }
                     : {
                         start_date,
                         end_date: new Date().toISOString().split("T")[0],
@@ -165,69 +255,109 @@ export default function DashboardPage() {
               ))}
             </Tabs>
           </Grid2>
-          <Grid2 size={{ laptop: 2 }}>
-            {" "}
-            <DatePicker
-              label="Start Date"
-              value={params.start_date ? dayjs(params.start_date) : null}
-              onChange={(val) =>
-                setParams((prev) => ({
-                  ...prev,
-                  start_date: val ? val.format("YYYY-MM-DD") : undefined,
-                }))
-              }
-              // slots={{ textField: TextField }}
-              slotProps={{
-                openPickerButton: {
-                  color: "secondary",
-                },
-                textField: {
-                  InputLabelProps: {
-                    shrink: true,
+          {statsType === "daily" && (
+            <Grid2 size={{ laptop: 2 }}>
+              {" "}
+              <DatePicker
+                label="Start Date"
+                value={params.start_date ? dayjs(params.start_date) : null}
+                onChange={(val) =>
+                  setParams((prev) => ({
+                    ...prev,
+                    start_date: val ? val.format("YYYY-MM-DD") : undefined,
+                  }))
+                }
+                // slots={{ textField: TextField }}
+                slotProps={{
+                  openPickerButton: {
+                    color: "secondary",
                   },
+                  textField: {
+                    InputLabelProps: {
+                      shrink: true,
+                    },
 
-                  fullWidth: false,
-                  size: "small",
-                  variant: "outlined",
-                },
-              }}
-            />
-          </Grid2>
-          <Grid2 size={{ laptop: 2 }}>
-            {" "}
-            <DatePicker
-              label="End Date"
-              value={params.end_date ? dayjs(params.end_date) : null}
-              onChange={(val) =>
-                setParams((prev) => ({
-                  ...prev,
-                  end_date: val ? val.format("YYYY-MM-DD") : undefined,
-                }))
-              }
-              // slots={{ textField: TextField }}
-              slotProps={{
-                openPickerButton: {
-                  color: "secondary",
-                },
-                textField: {
-                  InputLabelProps: {
-                    shrink: true,
+                    fullWidth: false,
+                    size: "small",
+                    variant: "outlined",
                   },
-                  color: "primary",
-                  inputProps: { color: "white" },
-                  fullWidth: false,
-                  size: "small",
-                  variant: "outlined",
-                },
-              }}
-            />
-          </Grid2>
+                }}
+              />
+            </Grid2>
+          )}
+
+          {statsType === "daily" && (
+            <Grid2 size={{ laptop: 2 }}>
+              {" "}
+              <DatePicker
+                label="End Date"
+                value={params.end_date ? dayjs(params.end_date) : null}
+                onChange={(val) =>
+                  setParams((prev) => ({
+                    ...prev,
+                    end_date: val ? val.format("YYYY-MM-DD") : undefined,
+                  }))
+                }
+                slotProps={{
+                  openPickerButton: {
+                    color: "secondary",
+                  },
+                  textField: {
+                    InputLabelProps: {
+                      shrink: true,
+                    },
+                    color: "primary",
+                    inputProps: { color: "white" },
+                    fullWidth: false,
+                    size: "small",
+                    variant: "outlined",
+                  },
+                }}
+              />
+            </Grid2>
+          )}
+
+          {statsType === "monthly" && (
+            <Grid2 size={{ laptop: 2 }}>
+              {" "}
+              <DatePicker
+                views={["year"]}
+                label="Year"
+                value={params.year ? dayjs(params.year) : null}
+                defaultValue={dayjs()}
+                onChange={(val) =>
+                  setParams((prev) => ({
+                    ...prev,
+                    year: val ? val.format("YYYY-MM-DD") : undefined,
+                  }))
+                }
+                minDate={dayjs("2015-01-01")}
+                maxDate={dayjs()}
+                slotProps={{
+                  openPickerButton: {
+                    color: "secondary",
+                  },
+                  textField: {
+                    InputLabelProps: {
+                      shrink: true,
+                    },
+                    color: "primary",
+                    inputProps: { color: "white" },
+                    fullWidth: false,
+                    size: "small",
+                    variant: "outlined",
+                  },
+                }}
+              />
+            </Grid2>
+          )}
         </Grid2>
 
         {isFetchingDailyListingData ? (
           <Skeleton variant="rectangular" height={300} />
         ) : (
           <StatsLineChart
+            loading={isFetchingMonthlyListingData || isFetchingDailyListingData}
             data={
               statsType === "daily"
                 ? dailyListingData?.data
@@ -240,14 +370,6 @@ export default function DashboardPage() {
             title="listings"
           />
         )}
-
-        {/* <PaginationComponent
-          total={total}
-          rowsPerPage={rowsPerPage}
-          handlePageChange={(val) => setPage(val)}
-          handleRowChange={(val) => setRowsPerPage(val)}
-          pageNumber={page}
-        /> */}
       </Card>
     </Stack>
   );

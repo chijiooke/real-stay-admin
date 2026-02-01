@@ -7,7 +7,9 @@ import StatusPill from "@/app/components/statusPill";
 import { NoData } from "@/app/components/table-utilities/EmptyTable";
 import { listingsApi } from "@/app/endpoints/properties/properties-api-slice";
 import { reviewsApi } from "@/app/endpoints/reviews/reviews-api-slice";
+import { userApi } from "@/app/endpoints/user/user-api-slice";
 import { theme } from "@/app/lib/theme";
+import { GetErrorMessage } from "@/app/utils/error-handler";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import {
   alpha,
@@ -16,16 +18,27 @@ import {
   Card,
   Divider,
   Grid2,
+  IconButton,
+  Menu,
+  MenuItem,
   Rating,
   Skeleton,
   Stack,
   Tab,
   Tabs,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import dayjs from "dayjs";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { toast } from "react-toastify";
+import {
+  UserActionEnum,
+  UserStatusEnum,
+} from "../../users/interfaces/users.types";
+import { LoadingButton } from "@mui/lab";
+import { capitalizeFirstLetter } from "@/app/utils/string-helper";
 
 interface DashboardPageProps {
   params: {
@@ -41,7 +54,7 @@ export default function DashboardPage({ params }: DashboardPageProps) {
 
   const [activeTab, setActiveTab] = useState(tabs[0].value);
 
-  const { data, isFetching } = listingsApi.useGetListingQuery({
+  const { data, isFetching, refetch } = listingsApi.useGetListingQuery({
     path: { id: params.id },
   });
 
@@ -114,6 +127,20 @@ export default function DashboardPage({ params }: DashboardPageProps) {
 
   const router = useRouter();
 
+  const [manageListing, { isLoading }] = listingsApi.useManageListingMutation();
+
+  const manage = async ({ action, id }: { action: string; id: string }) => {
+    await manageListing({ path: { id, action } })
+      .unwrap()
+      .then(() => {
+        toast.success(`listing has been ${action}d`);
+        refetch();
+      })
+      .catch((err) => {
+        toast.error(GetErrorMessage(err));
+      });
+  };
+
   return (
     <Stack>
       <PageHeading
@@ -133,7 +160,7 @@ export default function DashboardPage({ params }: DashboardPageProps) {
       <Grid2 container spacing={2}>
         <Grid2 size={{ xs: 12, md: 8 }}>
           <Card sx={{ mt: 4 }}>
-            {isFetching ? (
+            {isFetching || isLoading ? (
               <Stack sx={{ p: 2 }}>
                 <Skeleton
                   variant="rounded"
@@ -158,9 +185,87 @@ export default function DashboardPage({ params }: DashboardPageProps) {
                   >
                     Property Details
                   </Typography>
-                  <Button color="error" variant="contained" size="small">
-                    Flag
-                  </Button>
+                  <Stack
+                    sx={{
+                      display: "flex",
+                      flexDirection: "row",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <StatusPill data={data?.data.status} />{" "}
+                    <Stack
+                      sx={{
+                        display: "flex",
+                        flexDirection: "row",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        rowGap: 4,
+                      }}
+                    >
+                      <Tooltip title="more actions" arrow>
+                        <IconButton
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            handleClick(e);
+                          }}
+                        >
+                          <Icon
+                            icon="lsicon:more-filled"
+                            fontSize={20}
+                            color={theme.palette.secondary.light}
+                          />
+                        </IconButton>
+                      </Tooltip>
+                      <Menu
+                        id="actions"
+                        anchorEl={anchorEl}
+                        anchorOrigin={{
+                          vertical: "bottom",
+                          horizontal: "left",
+                        }}
+                        open={open}
+                        onClose={() => {
+                          handleClickAway();
+                        }}
+                        slotProps={{
+                          list: {
+                            "aria-labelledby": "actions-btn",
+                          },
+                        }}
+                      >
+                        <MenuItem
+                          onClick={(e) => {
+                            manage({
+                              action:
+                                data?.data?.status === UserStatusEnum.ACTIVE
+                                  ? UserActionEnum.DEACTIVATE
+                                  : UserActionEnum.ACTIVATE,
+                              id: data?.data?._id!,
+                            });
+                            e.stopPropagation();
+                            handleClickAway();
+                          }}
+                        >
+                          <LoadingButton
+                            size="small"
+                            color={
+                              data?.data?.status === UserStatusEnum.ACTIVE
+                                ? "error"
+                                : "success"
+                            }
+                          >
+                            {capitalizeFirstLetter(
+                              data?.data?.status === UserStatusEnum.ACTIVE
+                                ? UserActionEnum.DEACTIVATE
+                                : UserActionEnum.ACTIVATE
+                            )}
+                          </LoadingButton>
+                        </MenuItem>
+                      </Menu>
+                    </Stack>
+                  </Stack>
                 </Stack>
 
                 <Divider />
@@ -171,16 +276,6 @@ export default function DashboardPage({ params }: DashboardPageProps) {
                       <LabelAndValue label={item?.label} value={item?.value} />
                     </Grid2>
                   ))}
-                  <Grid2 size={{ xs: 12, md: 4 }} sx={{ my: 2 }}>
-                    <Typography
-                      variant="body2"
-                      color="secondary.lighter"
-                      mb={0.5}
-                    >
-                      Status
-                    </Typography>
-                    <StatusPill data={data?.data?.status} />
-                  </Grid2>
                 </Grid2>
               </Stack>
             )}

@@ -13,6 +13,15 @@ export interface Analytics {
   };
 }
 
+export interface BookingStatsData {
+  booking_stats: BookingStats;
+}
+export interface BookingStats {
+  total_booking_count: number;
+  total_margin: number;
+  total_gtv: number;
+}
+
 export interface AuthResponse {
   data: Analytics;
   success: boolean;

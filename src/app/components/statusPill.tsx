@@ -5,14 +5,17 @@ import { theme } from "../lib/theme";
 const StatusPill: FC<{ data?: string }> = ({ data }) => {
   const status = {
     "": theme.palette.warning.light,
+    pending: theme.palette.neutrals.light,
     active: theme.palette.success.light,
     inactive: theme.palette.error.light,
   };
+
+  console.log({ status, data });
   return (
     <Typography
       variant="body2"
       sx={{
-        backgroundColor: alpha(status[data || ""], 0.1),
+        backgroundColor: alpha(status[data!] || "#fff", 0.1),
         textAlign: "center",
         py: 1,
         px: 2,
