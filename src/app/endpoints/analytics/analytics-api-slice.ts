@@ -3,9 +3,8 @@ import { realstayApi } from "@/app/store/storeConfigQuery";
 import { ApiRequest, ApiResponse } from "../api";
 import {
   Analytics,
-  BookingStats,
   BookingStatsData,
-  StatsResponse,
+  StatsResponse
 } from "./analytics-types";
 
 export const analyticApi = realstayApi.injectEndpoints({
@@ -15,6 +14,15 @@ export const analyticApi = realstayApi.injectEndpoints({
       query: ({ params }) => {
         return {
           url: BASE_URL + "/analytics",
+          method: "GET",
+          params,
+        };
+      },
+    }),
+    adminsAnalytics: builder.query<ApiResponse<Analytics>, ApiRequest>({
+      query: ({ params }) => {
+        return {
+          url: BASE_URL + "/analytics/admins",
           method: "GET",
           params,
         };

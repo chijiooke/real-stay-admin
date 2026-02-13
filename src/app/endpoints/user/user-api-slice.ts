@@ -23,6 +23,15 @@ export const userApi = realstayApi.injectEndpoints({
         };
       },
     }),
+    getAdmins: builder.query<ApiResponse<UsersResponse>, ApiRequest>({
+      query: ({ params }) => {
+        return {
+          url: BASE_URL + `/users/admins`,
+          method: "GET",
+          params,
+        };
+      },
+    }),
     manageUsers: builder.mutation<ApiResponse<UsersResponse>, ApiRequest>({
       query: ({ path }) => {
         return {

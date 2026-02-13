@@ -1,7 +1,7 @@
 import { BASE_URL } from "@/app/configs/constant";
 import { realstayApi } from "@/app/store/storeConfigQuery";
 import { ApiRequest, ApiResponse } from "../api";
-import { AuthData } from "./auth-types";
+import { AuthData, InviteAdminUserPayload } from "./auth-types";
 
 export const authApi = realstayApi.injectEndpoints({
   overrideExisting: true,
@@ -20,6 +20,15 @@ export const authApi = realstayApi.injectEndpoints({
       query: ({ data }) => {
         return {
           url: BASE_URL + "/auth/accept-invite",
+          method: "POST",
+          data: data,
+        };
+      },
+    }),
+    inviteAdmin: builder.mutation<any, ApiRequest<InviteAdminUserPayload>>({
+      query: ({ data }) => {
+        return {
+          url: BASE_URL + "/auth/admin-invite",
           method: "POST",
           data: data,
         };

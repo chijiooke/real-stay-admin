@@ -5,8 +5,10 @@ import { theme } from "../lib/theme";
 const StatusPill: FC<{ data?: string }> = ({ data }) => {
   const status = {
     "": theme.palette.warning.light,
-    pending: theme.palette.neutrals.light,
+    pending: theme.palette.secondary.light,
     active: theme.palette.success.light,
+    success: theme.palette.success.light,
+    failed: theme.palette.error.light,
     inactive: theme.palette.error.light,
   };
 

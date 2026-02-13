@@ -1,28 +1,23 @@
 "use client";
-import { PaginationComponent } from "@/app/components/pagination";
 
 import { analyticApi } from "@/app/endpoints/analytics/analytics-api-slice";
 import { theme } from "@/app/lib/theme";
+import { getStatsArray } from "@/app/utils/chart-helper";
+import { formatToNaira } from "@/app/utils/globals";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import {
   Card,
   Grid2,
-  InputAdornment,
   Skeleton,
   Stack,
   Tab,
   Tabs,
-  TextField,
-  Typography,
+  Typography
 } from "@mui/material";
-import { useEffect, useState } from "react";
-import { UserTable } from "./components/UserTable";
-import StatsLineChart from "./components/Chart";
-import { getStatsArray } from "@/app/utils/chart-helper";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
-import { formatToNaira } from "@/app/utils/globals";
-import { YearPicker } from "@mui/lab";
+import { useState } from "react";
+import StatsLineChart from "./components/Chart";
 
 export default function DashboardPage() {
   const { data: analytics, isFetching } = analyticApi.useAnalyticsQuery({});

@@ -1,11 +1,12 @@
 "use client";
 import { PaginationComponent } from "@/app/components/pagination";
 
-import { ContextMenu } from "@/app/components/ContextMenu";
 import { PageHeading } from "@/app/components/pageHeading";
+import { analyticApi } from "@/app/endpoints/analytics/analytics-api-slice";
 import { userApi } from "@/app/endpoints/user/user-api-slice";
 import { theme } from "@/app/lib/theme";
 import { sanitizeFilterQuery } from "@/app/utils/filter-helpers";
+import { Icon } from "@iconify/react/dist/iconify.js";
 import {
   Button,
   Card,
@@ -20,10 +21,12 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { Fragment, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { UserTable } from "./components/UserTable";
-import { Icon } from "@iconify/react/dist/iconify.js";
-import { analyticApi } from "@/app/endpoints/analytics/analytics-api-slice";
+import { InviteAdminModal } from "./components/InviteAdminModal";
+import { authApi } from "@/app/endpoints/auth/auth-api-slice";
+import { toast } from "react-toastify";
+import { GetErrorMessage } from "@/app/utils/error-handler";
 
 export default function DashboardPage() {
   const [page, setPage] = useState(1);
@@ -52,10 +55,9 @@ export default function DashboardPage() {
     { lebel: "Inactive", value: "inactive" },
   ];
 
-  const { data, isFetching } = userApi.useGetUsersQuery({
+  const { data, isFetching } = userApi.useGetAdminsQuery({
     params: {
       ...searchParams,
-      user_type: "admin",
       page,
       page_size: rowsPerPage,
     },
@@ -84,12 +86,17 @@ export default function DashboardPage() {
   );
 
   const { data: analytics, isFetching: isFetchingAnalytics } =
-    analyticApi.useAnalyticsQuery({ params: { user_type: "admin" } });
+    analyticApi.useAdminsAnalyticsQuery({ params: {} });
   const userAnalytics = [
     {
       title: "Total users",
       value: analytics?.data?.userStats?.total_users,
       icon: "hugeicons:user-multiple",
+    },
+    {
+      title: "Pending users",
+      value: analytics?.data?.userStats?.pending_users,
+      icon: "hugeicons:user-block-02",
     },
     {
       title: "Active users",
@@ -103,17 +110,22 @@ export default function DashboardPage() {
     },
   ];
 
+  const invite = () => {};
+
+  const [openModal, setOpenModal] = useState(false);
+  const [inviteAdmin, { isLoading }] = authApi.useInviteAdminMutation();
+
   return (
     <Stack>
       <PageHeading
         showBackButton={false}
-        title="Settings"
+        title="Admins"
         decription="Manage admin users, roles and permissions"
       />
 
       <Grid2 container spacing={1.5} sx={{ mt: 2 }}>
         {userAnalytics?.map((d) => (
-          <Grid2 size={{ xs: 12, md: 4 }} key={d.title}>
+          <Grid2 size={{ xs: 12, md: 3 }} key={d.title}>
             <Card
               sx={{
                 p: 2,
@@ -206,26 +218,36 @@ export default function DashboardPage() {
             }}
           />
 
-          <Button
-            id="filter-by-status-btn"
-            aria-controls={open ? "filter-by-status" : undefined}
-            aria-haspopup="true"
-            aria-expanded={open ? "true" : undefined}
-            color="secondary"
-            sx={{
-              // borderRadius: 0,
-              "&:hover": {
-                bgcolor: theme?.palette?.secondary?.main,
-                color: theme?.palette?.secondary?.contrastText,
-              },
-            }}
-            size="small"
-            onClick={handleClick}
-            startIcon={<Icon icon="mi:filter" width="18" height="18" />}
-            variant="outlined"
-          >
-            filter by status
-          </Button>
+          <Stack sx={{ display: "flex", flexDirection: "row", gap: 1 }}>
+            {" "}
+            <Button
+              id="filter-by-status-btn"
+              aria-controls={open ? "filter-by-status" : undefined}
+              aria-haspopup="true"
+              aria-expanded={open ? "true" : undefined}
+              color="secondary"
+              sx={{
+                "&:hover": {
+                  bgcolor: theme?.palette?.secondary?.main,
+                  color: theme?.palette?.secondary?.contrastText,
+                },
+              }}
+              size="small"
+              onClick={handleClick}
+              startIcon={<Icon icon="mi:filter" width="18" height="18" />}
+              variant="outlined"
+            >
+              filter by status 
+            </Button>
+            <Button
+              color="secondary"
+              variant="contained"
+              onClick={() => setOpenModal(true)}
+            >
+              Invite Admin
+            </Button>
+          </Stack>
+
           <Menu
             sx={{ width: "200px" }}
             id="filter-by-status"
@@ -281,6 +303,22 @@ export default function DashboardPage() {
           />
         </Stack>
       </Card>
+      <InviteAdminModal
+        isLoading={isLoading}
+        onClose={() => setOpenModal(false)}
+        open={openModal}
+        onSubmit={(payload) => {
+          inviteAdmin({ data: payload })
+            .unwrap()
+            .then(() => {
+              toast.success("Invitation sent successfully");
+              setOpenModal(false);
+            })
+            .catch((err) => {
+              toast.error(GetErrorMessage(err));
+            });
+        }}
+      />
     </Stack>
   );
 }

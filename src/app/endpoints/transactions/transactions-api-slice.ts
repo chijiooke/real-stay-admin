@@ -1,12 +1,12 @@
 import { BASE_URL } from "@/app/configs/constant";
 import { realstayApi } from "@/app/store/storeConfigQuery";
 import { ApiRequest, ApiResponse } from "../api";
-import { Transaction, TransactionsResponse } from "./transactions-types";
+import { Transaction, TransactionsAPIResponse } from "./transactions-types";
 
 export const transactionApi = realstayApi.injectEndpoints({
   overrideExisting: true,
   endpoints: (builder) => ({
-    getTransaction: builder.query<ApiResponse<TransactionsResponse>, ApiRequest>({
+    getTransaction: builder.query<ApiResponse<Transaction>, ApiRequest>({
       query: ({ path }) => {
         return {
           url: BASE_URL + `/transactions/${path?.id}`,
@@ -14,7 +14,7 @@ export const transactionApi = realstayApi.injectEndpoints({
         };
       },
     }),
-    getTransactions: builder.query<ApiResponse<Transaction>, ApiRequest>({
+    getTransactions: builder.query<ApiResponse<TransactionsAPIResponse>, ApiRequest>({
       query: ({ params }) => {
         return {
           url: BASE_URL + `/transactions`,

@@ -117,7 +117,7 @@ export default function SignInPage() {
               placeholder="enter email"
               value={formik.values.email}
               {...getFormikTextFieldProps(formik, "email")}
-            />{" "}
+            />
             <TextField
               size="medium"
               variant="outlined"

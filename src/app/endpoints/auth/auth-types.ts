@@ -14,3 +14,10 @@ export interface AuthResponse {
   data: AuthData;
   success: boolean;
 }
+
+export interface InviteAdminUserPayload {
+  email: string;
+  first_name: string;
+  last_name: string;
+  phone_number: string;
+}

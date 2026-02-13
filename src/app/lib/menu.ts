@@ -32,25 +32,25 @@ export const menuItems: { heading: string; menus: MenuItem[] }[] = [
         path: "/notifications",
       },
       {
-        label: "Reports and Analytics",
+        label: "Transaction Monitoring",
         icon: "mage:dashboard-bar-notification",
-        path: "/reports",
+        path: "/transactions",
       },
     ],
   },
   {
     heading: "Admin Utility",
     menus: [
-      {
-        label: "App configs",
-        icon: "hugeicons:settings-03",
-        path: "/audit-log",
-      },
-      { label: "Audit logs", icon: "hugeicons:task-01", path: "/audit-log" },
+      // {
+      //   label: "App configs",
+      //   icon: "hugeicons:settings-03",
+      //   path: "/audit-log",
+      // },
+      { label: "Audit logs", icon: "hugeicons:task-01", path: "/audit-logs" },
       {
         label: "Admin Management",
         icon: "hugeicons:settings-03",
-        path: "/settings",
+        path: "/admin-management",
       },
       // {
       //   label: "Roles and Permissions",

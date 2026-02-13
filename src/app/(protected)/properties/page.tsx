@@ -273,9 +273,7 @@ export default function DashboardPage() {
               variant="contained"
               onClick={() => setfilteropen(true)}
               size="large"
-              endIcon={
-                <Icon icon="fluent:filter-24-regular" width="18" height="18" />
-              }
+              startIcon={<Icon icon="mi:filter" width="18" height="18" />}
             >
               Filter
             </Button>

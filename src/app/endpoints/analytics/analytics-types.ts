@@ -5,6 +5,7 @@ export interface Analytics {
     total_users: number;
     active_users: number;
     inactive_users: number;
+    pending_users?: number;
   };
   listingStats: {
     total_listings: number;

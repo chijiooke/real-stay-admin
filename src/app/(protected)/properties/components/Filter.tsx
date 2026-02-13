@@ -233,7 +233,6 @@ export function FilterDrawer<T extends Record<string, unknown>>({
               onChange(draft);
               onClose();
             }}
-            // sx={{ color: theme.palette.secondary.main }}
           >
             Apply
           </Button>
@@ -249,7 +248,6 @@ export function FilterDrawer<T extends Record<string, unknown>>({
             }}
             sx={{
               color: theme.palette.secondary.main,
-              // borderColor: theme.palette.secondary.main,
             }}
           >
             Clear & Close

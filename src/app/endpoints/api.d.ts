@@ -20,6 +20,7 @@ export type ApiResponse<T = any> = {
   success: boolean;
   data: T;
   message: string;
+  pagination: Pagination;
 };
 
 export type ApiPaginatedResponseData<T = void> = {
@@ -33,3 +34,10 @@ export type ApiErrorResponse = {
   status: number;
   data: { [key: string]: string };
 };
+
+export interface Pagination {
+  total_items: number;
+  total_pages: number;
+  current_page: number;
+  limit: number;
+}
