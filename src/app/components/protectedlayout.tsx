@@ -9,6 +9,7 @@ import {
   Button,
   ButtonBase,
   CircularProgress,
+  Collapse,
   CssBaseline,
   Drawer,
   IconButton,
@@ -43,6 +44,7 @@ export default function ProtectedLayout({
   const isAuthenticated = useUserSession();
   const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [adminMenuOpen, setAdminMenuOpen] = useState(false);
   const user = useSelector((state: RootState) => state.auth.user);
   const [userQuery, { isLoading: userLoading }] = userApi.useLazyGetUserQuery();
   const dispatch = useDispatch();
@@ -365,6 +367,7 @@ export default function ProtectedLayout({
             </Typography>
 
             <ButtonBase
+              onClick={() => setAdminMenuOpen(!adminMenuOpen)}
               sx={{
                 display: "flex",
                 flexDirection: "row",
@@ -407,42 +410,48 @@ export default function ProtectedLayout({
               </Stack>{" "}
               <Icon
                 color={theme.palette.secondary.light}
-                icon="mingcute:arrows-right-line"
+                icon={
+                  adminMenuOpen
+                    ? "mingcute:arrows-down-line"
+                    : "mingcute:arrows-right-line"
+                }
                 width="18"
                 height="18"
               />
             </ButtonBase>
-            <List sx={{ mt: 0.4, width: "100%" }}>
-              {userItems?.map((menu, i) => (
-                <ListItemButton
-                  key={i}
-                  component="button"
-                  onClick={() => menu.func?.()}
-                  sx={{
-                    px: 2,
-                    py: 1,
-                    width: "100%",
-                    color: menu.color || "inherit",
-                  }}
-                >
-                  <ListItemIcon
+            <Collapse in={adminMenuOpen}>
+              <List sx={{ mt: 0.4, width: "100%" }}>
+                {userItems?.map((menu, i) => (
+                  <ListItemButton
+                    key={i}
+                    component="button"
+                    onClick={() => menu.func?.()}
                     sx={{
-                      minWidth: 32,
-                      color: menu.color || theme?.palette?.secondary?.light,
+                      px: 2,
+                      py: 1,
+                      width: "100%",
+                      color: menu.color || "inherit",
                     }}
                   >
-                    <Icon icon={menu.icon} width="18" height="18" />
-                  </ListItemIcon>
-                  <ListItemText
-                    primary={menu.label}
-                    primaryTypographyProps={{
-                      fontSize: "0.875rem",
-                      color: menu.color || theme?.palette?.secondary?.light,
-                    }}
-                  />
-                </ListItemButton>
-              ))}
-            </List>
+                    <ListItemIcon
+                      sx={{
+                        minWidth: 32,
+                        color: menu.color || theme?.palette?.secondary?.light,
+                      }}
+                    >
+                      <Icon icon={menu.icon} width="18" height="18" />
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={menu.label}
+                      primaryTypographyProps={{
+                        fontSize: "0.875rem",
+                        color: menu.color || theme?.palette?.secondary?.light,
+                      }}
+                    />
+                  </ListItemButton>
+                ))}
+              </List>
+            </Collapse>
           </Stack>
         </Drawer>
       </Box>
