@@ -143,7 +143,7 @@ export default function DashboardPage() {
         <Stack sx={{ p: 2 }}>
           {" "}
           <PaginationComponent
-            total={data?.data?.pagination?.total_items || 0}
+            total={data?.pagination?.total_items || 0}
             rowsPerPage={rowsPerPage}
             handlePageChange={(val) => setPage(val)}
             handleRowChange={(val) => setRowsPerPage(val)}

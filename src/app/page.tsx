@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import { Suspense } from "react";
 
 const url = process.env.NEXT_PUBLIC_BASE_URL;
 export const metadata = {
@@ -30,5 +31,6 @@ export const metadata = {
 };
 
 export default function Home() {
+  
   redirect("/sign-in");
 }
