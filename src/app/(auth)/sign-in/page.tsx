@@ -81,14 +81,15 @@ export default function SignInPage() {
     <div className="flex min-h-screen items-center justify-center  ">
       <div>
         <Card className="flex flex-col gap-4 p-8 md:w-[400px] w-[300px]">
+       
+          <Stack sx={{ mb: 4, gap: 0.5 }}>
           <Image
             src="/edge-tech-logo.svg"
             alt="logo"
-            width={40}
-            height={40}
+            width={50}
+            height={50}
             className="mx-auto mb-3"
           />
-          <Stack sx={{ mb: 4, gap: 0.5 }}>
             <Typography
               className="font-bold"
               color="secondary.light"
@@ -104,7 +105,7 @@ export default function SignInPage() {
               align="center"
               variant="caption"
             >
-              sign in to continue.
+              welcome back, we&apos;ve missed you.
             </Typography>
           </Stack>
           <Stack sx={{ display: "flex", flexDirection: "column", gap: 5 }}>
