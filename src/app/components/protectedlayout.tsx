@@ -425,7 +425,12 @@ export default function ProtectedLayout({
                   <ListItemButton
                     key={i}
                     component="button"
-                    onClick={() => menu.func?.()}
+                    // onClick={() => }
+                    onClick={() =>
+                      menu?.path
+                        ? router.push(menu?.path || "")
+                        : menu.func?.()
+                    }
                     sx={{
                       px: 2,
                       py: 1,

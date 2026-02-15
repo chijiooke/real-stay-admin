@@ -59,7 +59,7 @@ export default function UserDetailsPage({ params }: UserDetailsPageProps) {
       canCopy: true,
     },
     { label: "First Name", value: data?.data?.user?.first_name },
-    { label: "Last Name", value: data?.data?.user?.last_name },
+    { label: "last Name", value: data?.data?.user?.last_name },
     { label: "Email", value: data?.data?.user?.email, canCopy: true },
     {
       label: "Phone Number",

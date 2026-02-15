@@ -42,16 +42,17 @@ export const menuItems: { heading: string; menus: MenuItem[] }[] = [
     heading: "Admin Utility",
     menus: [
       // {
-      //   label: "App configs",
+      //   label: "Roles & Permissions",
       //   icon: "hugeicons:settings-03",
       //   path: "/audit-log",
       // },
-      { label: "Audit logs", icon: "hugeicons:task-01", path: "/audit-logs" },
       {
-        label: "Admin Management",
+        label: "Admin User Mgt.",
         icon: "hugeicons:settings-03",
         path: "/admin-management",
       },
+      { label: "Audit logs", icon: "hugeicons:task-01", path: "/audit-logs" },
+ 
       // {
       //   label: "Roles and Permissions",
       //   icon: "solar:shield-user-linear",
@@ -62,9 +63,9 @@ export const menuItems: { heading: string; menus: MenuItem[] }[] = [
 ];
 export const userItems: MenuItem[] = [
   {
-    label: "Account",
+    label: "My Profile",
     icon: "iconoir:user",
-    path: "/users",
+    path: "/profile",
   },
   {
     label: "Log out",
